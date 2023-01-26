@@ -1,8 +1,11 @@
 import 'package:bestyamete/bloc/index.dart';
+import 'package:bestyamete/main.dart';
+import 'package:bestyamete/mob/download_mob_controller.dart';
 import 'package:bestyamete/utils/helpers.dart';
 import 'package:better_player_hls/better_player_hls.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_downloader/flutter_downloader.dart';
 
 class StreamPage extends StatelessWidget {
   StreamPage({Key? key}) : super(key: key);
@@ -59,10 +62,18 @@ class StreamPage extends StatelessWidget {
   //Initialize BetterPlayerController
   //The parameter is the data used to fill the controller retrieved from StreamingBlocState
   void initializeController(_){
+
     BetterPlayerDataSource betterPlayerDataSource;
+    var data = getIt<DownloadMobController>().queue.toList();
+    var download = data.firstWhere((element) => element.videoId == _.videoId!);
+    if(download.videoId != '' && download.status == DownloadTaskStatus.complete){
+      betterPlayerDataSource = BetterPlayerDataSource.file(
+        '${getIt<DownloadMobController>().localPath}/${download.videoId}.mp4'
+      );
+    }
 
     //If have two data sources initialize with two video quality options
-    if(_.location!.isNotEmpty && _.locationsd!.isNotEmpty ){
+    else if(_.location!.isNotEmpty && _.locationsd!.isNotEmpty ){
       betterPlayerDataSource = BetterPlayerDataSource(
           BetterPlayerDataSourceType.network,
           _.location == null ? _.locationsd! : _.location!,headers: DataHelpers.baseHeaders,

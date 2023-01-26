@@ -1,3 +1,8 @@
+import 'dart:isolate';
+import 'dart:ui';
+
+import 'package:flutter_downloader/flutter_downloader.dart';
+
 class DataHelpers{
   static String baseUrl = 'https://appanimeplus.tk/play-api.php';
   static String baseImageUrl = 'https://cdn.appanimeplus.tk/img/';
@@ -15,4 +20,10 @@ class DataHelpers{
   static String popularQuery = 'populares';
   static String nextEpisodeQuery = 'catid';
   static String nextEpisodePrefixQuery = 'next';
+  static void downloadCallback(
+      String id, DownloadTaskStatus status, int progress) {
+    final SendPort send =
+    IsolateNameServer.lookupPortByName('downloader_send_port')!;
+    send.send([id, status, progress]);
+  }
 }
