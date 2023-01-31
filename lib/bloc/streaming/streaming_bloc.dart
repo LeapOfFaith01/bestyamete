@@ -17,7 +17,10 @@ class StreamingBloc extends Bloc<StreamingEvent, StreamingState> {
       if(nextEpisode.isEmpty){
         emit(StreamingState.loaded(episode.first, Stream()));
       }else{
-        emit(StreamingState.loaded(episode.first, nextEpisode.first));
+        if(nextEpisode == null){
+
+        }
+        emit(StreamingState.loaded(episode.first, nextEpisode.first??Stream()));
       }
 
     });

@@ -1,5 +1,6 @@
 import 'package:bestyamete/bloc/index.dart';
 import 'package:bestyamete/mob/download_mob_controller.dart';
+import 'package:bestyamete/mob/favoritos_mob_controller.dart';
 import 'package:bestyamete/modules/download_cubit.dart';
 import 'package:bestyamete/modules/downloadcontroller.dart';
 import 'package:bestyamete/ui/pages/detail_page.dart';
@@ -17,6 +18,7 @@ void main()async {
   WidgetsFlutterBinding.ensureInitialized();
   await FlutterDownloader.initialize(debug: true, ignoreSsl: true);
   getIt.registerSingleton<DownloadMobController>(DownloadMobController());
+  getIt.registerSingleton<FavoritosController>(FavoritosController());
   runApp(MyApp());
 }
 
@@ -57,6 +59,7 @@ class _AppState extends State<App> {
     context.read<LatestBloc>().add(const LatestEvent.load());
     context.read<PopularBloc>().add(const PopularEvent.load());
     getIt<DownloadMobController>().initialize();
+    getIt<FavoritosController>().initialize();
     // context.read<DownloadCubit>().initialize();
   }
 
