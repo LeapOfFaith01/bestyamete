@@ -8,10 +8,13 @@ The application is in initial stage. can have bugs and performance issues on som
 ## Resources 
 - [x] Anime fetch and streaming
 - [x] Search animes by name
-- [ ] Sort animes by better
-- [ ] Sort animes by category
+- [x] Bookmarks system
 - [!] Downloads (Semi funcional)
-- [ ] History and resume content
+- [x] Download page
+- [] History and resume system
+- [] Offline system
+- [] Sort animes by better
+- [] Sort animes by category
 
 ## Major Issues
 
@@ -20,4 +23,5 @@ The application is in initial stage. can have bugs and performance issues on som
 - [x] Download does not show progress in the interface.
 - [ ] Slow download speed.
 - [ ] When a search returns no data, it keeps loading forever
+- [ ] Unable to play downloaded content without internet connection
 

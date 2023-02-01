@@ -10,6 +10,7 @@ import 'package:mobx/mobx.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path_provider_android/path_provider_android.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../external/api.dart';
 import '../models/download_item.dart';
@@ -19,6 +20,30 @@ part 'download_mob_controller.g.dart';
 class DownloadMobController = DownloadBase with _$DownloadMobController;
 
 abstract class DownloadBase with Store {
+
+  //Persistent data variables
+  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+  late final SharedPreferences __prefs;
+  Map<String, DownloadItem> downloads = {};
+
+  void initializePersistenceModule()async{
+    __prefs = await _prefs;
+    recoveryFromStorage();
+  }
+  void recoveryFromStorage(){
+    if(__prefs.getKeys().contains('downloads')){
+      downloads = json.decode(__prefs.getString('downloads')!).map((key, value){
+        print(value);
+        return MapEntry(key,DownloadItem.fromJson(value));
+      }).cast<String,DownloadItem>();
+      _queue.addAll(downloads.values);
+    }
+  }
+
+  void update(){
+    __prefs.setString('downloads', json.encode(_queue));
+  }
+
   final Api _api = Api();
   ReceivePort _port = ReceivePort();
   bool isDebug = true;
@@ -41,6 +66,7 @@ abstract class DownloadBase with Store {
 
   @action
   void initialize() {
+    initializePersistenceModule();
     bindBackgroundIsolate();
     FlutterDownloader.registerCallback(downloadCallback);
     _permissionReady = false;
@@ -60,10 +86,11 @@ abstract class DownloadBase with Store {
     item.itemID = itemID;
 
     _queue.add(item);
+    update();
     developer.log(
       'Download Manager',
       name: 'br.tospendtime.download',
-      error: _queue,
+      error: _queue.first.toJson(),
     );
   }
 
