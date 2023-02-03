@@ -46,38 +46,8 @@ class AnimeSearchDelegate extends SearchDelegate<String>{
             initial: () => Container(),
             loading: () =>Center(child: CircularProgressIndicator(),),
             error: () =>FlutterLogo(),
-            loaded: (_) => GridView.builder(
-              itemCount: _.length,
-              padding: EdgeInsets.all(10),
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 3,
-                mainAxisSpacing: 10,
-                childAspectRatio: 9/16,
-                crossAxisSpacing: 10
-              ),
-              itemBuilder: (context, index)=> GestureDetector(
-                onTap: (){
-                  context.read<DetailBloc>().add(DetailEvent.load(_[index].id!));
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => DetailPage()),
-                  );
-                },
-                child: GridTile(
-                    footer: Center(
-                      child: Padding(
-                        padding: const EdgeInsets.only(bottom: 5,left: 5,right: 5),
-                        child: Text(_[index].title == null ? _[index].categoryName! : _[index].title!,textAlign: TextAlign.start,),
-                      ),
-                    ),
-                    child:
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 50),
-                      child: ClipRRect(borderRadius:BorderRadius.circular(15),child: CachedNetworkImage(imageUrl: DataHelpers.baseImageUrl+_[index].categoryImage!,httpHeaders: DataHelpers.baseHeaders,fit: BoxFit.cover,)),
-                    )
-                ),
-              ),
-            ));
+            loaded: (_) => AnimeListHorizontal(data: _)
+        );
       },
     );
   }

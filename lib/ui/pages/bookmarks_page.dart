@@ -1,9 +1,11 @@
+import 'package:bestyamete/bloc/index.dart';
 import 'package:bestyamete/mob/download_mob_controller.dart';
 import 'package:bestyamete/mob/favoritos_mob_controller.dart';
 import 'package:bestyamete/ui/pages/stream_page.dart';
 import 'package:bestyamete/ui/widgets/anime_list_horizontal.dart';
 import 'package:bestyamete/ui/widgets/build_download_actions.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../main.dart';
 
@@ -42,28 +44,49 @@ class Bookmarks extends StatelessWidget {
             ValueListenableBuilder(
                 valueListenable: getIt<DownloadMobController>().notifier,
                 builder: (context, notifier, child) {
-                  var data = getIt<DownloadMobController>().queue.toList();
-                  return data.length > 0
-                      ? ListView.builder(
-                          itemCount: data.length,
-                          itemBuilder: (context, index) {
-                            return ListTile(
-                              title: Text(data[index].name),
-                              onTap: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => StreamPage()));
-                              },
-                              trailing: buildActionForTask(data[index]),
-                            );
-                          })
-                      : Center(
-                          child:
-                              Text('Parece que você não possui downloads :('),
+                  var data = getIt<DownloadMobController>().downloads;
+                  var keys = data.values.toList();
+                  return data.isNotEmpty ? ListView.builder(
+                      itemCount: keys.length,
+                      itemBuilder: (context, index) {
+                        return ListTile(
+                          title: Text(keys[index].name),
+                          onTap: () {
+                            context.read<StreamingBloc>().add(StreamingEvent
+                                .load(keys[index].videoId));
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => StreamPage()));
+                          },
+                          trailing: buildActionForTask(keys[index]),
                         );
-                })
-          ],
+                      }
+                  ) : Center(
+                    child:
+                    Text('Parece que você não possui downloads :('),
+                  );
+                  //   return data.length > 0
+                  //       ? ListView.builder(
+                  //           itemCount: data.length,
+                  //           itemBuilder: (context, index) {
+                  //             return ListTile(
+                  //               title: Text(data[index].name),
+                  //               onTap: () {
+                  //                 Navigator.push(
+                  //                     context,
+                  //                     MaterialPageRoute(
+                  //                         builder: (context) => StreamPage()));
+                  //               },
+                  //               trailing: buildActionForTask(data[index]),
+                  //             );
+                  //           })
+                  //       : Center(
+                  //           child:
+                  //               Text('Parece que você não possui downloads :('),
+                  //         );
+                  // })
+                })],
         ),
       ),
     );

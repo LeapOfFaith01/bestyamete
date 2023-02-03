@@ -111,22 +111,17 @@ class DetailPage extends StatelessWidget {
                               valueListenable:
                                   getIt<DownloadMobController>().notifier,
                               builder: (context, notifier, child) {
-                                var queue = getIt<DownloadMobController>()
-                                    .queue
-                                    .toList();
-                                var item = queue.firstWhere(
-                                    (element) =>
-                                        element.videoId == __[index].videoId!,
-                                    orElse: () => DownloadItem(
-                                        name: '', url: '', videoId: ''));
-                                return item.videoId == __[index].videoId!
-                                    ? buildActionForTask(item)
+                                var downloads =
+                                    getIt<DownloadMobController>().downloads;
+                                return downloads.containsKey(__[index].videoId)
+                                    ? buildActionForTask(
+                                        downloads[__[index].videoId]!)
                                     : IconButton(
-                                        onPressed: () {
-                                          getIt<DownloadMobController>()
-                                              .addDownload(__[index].videoId!);
-                                        },
-                                        icon: Icon(Icons.download));
+                                          onPressed: () {
+                                            getIt<DownloadMobController>()
+                                                .addDownload(__[index].videoId!);
+                                          },
+                                          icon: Icon(Icons.download));
                               })),
                     ),
                   ),

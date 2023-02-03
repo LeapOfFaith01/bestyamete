@@ -9,29 +9,6 @@ part of 'download_mob_controller.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic, no_leading_underscores_for_local_identifiers
 
 mixin _$DownloadMobController on DownloadBase, Store {
-  Computed<ObservableList<DownloadItem>>? _$queueComputed;
-
-  @override
-  ObservableList<DownloadItem> get queue => (_$queueComputed ??=
-          Computed<ObservableList<DownloadItem>>(() => super.queue,
-              name: 'DownloadBase.queue'))
-      .value;
-
-  late final _$_queueAtom = Atom(name: 'DownloadBase._queue', context: context);
-
-  @override
-  ObservableList<DownloadItem> get _queue {
-    _$_queueAtom.reportRead();
-    return super._queue;
-  }
-
-  @override
-  set _queue(ObservableList<DownloadItem> value) {
-    _$_queueAtom.reportWrite(value, super._queue, () {
-      super._queue = value;
-    });
-  }
-
   late final _$updateQueueAsyncAction =
       AsyncAction('DownloadBase.updateQueue', context: context);
 
@@ -79,7 +56,7 @@ mixin _$DownloadMobController on DownloadBase, Store {
   @override
   String toString() {
     return '''
-queue: ${queue}
+
     ''';
   }
 }

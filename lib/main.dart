@@ -1,14 +1,8 @@
 import 'package:bestyamete/bloc/index.dart';
 import 'package:bestyamete/mob/download_mob_controller.dart';
 import 'package:bestyamete/mob/favoritos_mob_controller.dart';
-import 'package:bestyamete/modules/download_cubit.dart';
-import 'package:bestyamete/modules/downloadcontroller.dart';
-import 'package:bestyamete/ui/pages/detail_page.dart';
 import 'package:bestyamete/ui/pages/home_page.dart';
-import 'package:bestyamete/ui/pages/stream_page.dart';
-import 'package:bestyamete/utils/helpers.dart';
 import 'package:bestyamete/utils/theme.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
@@ -17,6 +11,7 @@ GetIt getIt = GetIt.instance;
 void main()async {
   WidgetsFlutterBinding.ensureInitialized();
   await FlutterDownloader.initialize(debug: true, ignoreSsl: true);
+
   getIt.registerSingleton<DownloadMobController>(DownloadMobController());
   getIt.registerSingleton<FavoritosController>(FavoritosController());
   runApp(MyApp());
@@ -33,7 +28,6 @@ class MyApp extends StatelessWidget {
       BlocProvider(create: (_) => PopularBloc()),
       BlocProvider(create: (_) => SearchBloc()),
       BlocProvider(create: (_) => StreamingBloc(),),
-      BlocProvider(create: (_)=> DownloadCubit())
     ], child: MaterialApp(
       // debugShowCheckedModeBanner: false,
       locale: Locale('pt-Br'),

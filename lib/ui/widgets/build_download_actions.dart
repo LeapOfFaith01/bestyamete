@@ -6,7 +6,7 @@ import '../../main.dart';
 import '../../models/download_item.dart';
 
 Widget buildActionForTask(DownloadItem item) {
-  if (item.status == DownloadTaskStatus.undefined) {
+  if (item.status == DownloadTaskStatus.undefined.value) {
     return RawMaterialButton(
       onPressed: () {
         getIt<DownloadMobController>().addDownload(item);
@@ -16,7 +16,17 @@ Widget buildActionForTask(DownloadItem item) {
       constraints: BoxConstraints(minHeight: 32.0, minWidth: 32.0),
     );
   }
-  else if (item.status == DownloadTaskStatus.running) {
+  else if (item.status == DownloadTaskStatus.enqueued.value) {
+    return RawMaterialButton(
+      onPressed: () {
+        getIt<DownloadMobController>().addDownload(item);
+      },
+      child: Icon(Icons.ac_unit),
+      shape: CircleBorder(),
+      constraints: BoxConstraints(minHeight: 32.0, minWidth: 32.0),
+    );
+  }
+  else if (item.status == DownloadTaskStatus.running.value) {
     return RawMaterialButton(
       onPressed: () {
         getIt<DownloadMobController>().pauseDownload(item);
@@ -28,7 +38,7 @@ Widget buildActionForTask(DownloadItem item) {
       ),
     );
   }
-  else if (item.status == DownloadTaskStatus.paused) {
+  else if (item.status == DownloadTaskStatus.paused.value) {
     return RawMaterialButton(
       onPressed: () {
         getIt<DownloadMobController>().resumeDownload(item);
@@ -41,7 +51,7 @@ Widget buildActionForTask(DownloadItem item) {
       constraints: BoxConstraints(minHeight: 32.0, minWidth: 32.0),
     );
   }
-  else if (item.status == DownloadTaskStatus.complete) {
+  else if (item.status == DownloadTaskStatus.complete.value) {
     return Row(
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.end,
@@ -65,7 +75,7 @@ Widget buildActionForTask(DownloadItem item) {
     );
   }
 
-  else if (item.status == DownloadTaskStatus.failed) {
+  else if (item.status == DownloadTaskStatus.failed.value) {
     return Row(
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.end,
@@ -85,7 +95,7 @@ Widget buildActionForTask(DownloadItem item) {
       ],
     );
   }else{
-    return Container();
+    return SizedBox(height: 50,width: 50,);
   }
 }
 
@@ -107,9 +117,10 @@ class ProgressWithIcon extends StatelessWidget {
             color: Colors.red,
           ),
           // you can replace
+          progress > 0 ?
           CircularProgressIndicator(
             value: progress / 100,
-          ),
+          ): CircularProgressIndicator(),
         ],
       ),
     );

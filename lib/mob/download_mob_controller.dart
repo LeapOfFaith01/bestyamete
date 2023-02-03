@@ -3,7 +3,6 @@ import 'dart:io';
 import 'dart:isolate';
 import 'dart:ui';
 import 'dart:developer' as developer;
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:mobx/mobx.dart';
@@ -33,15 +32,15 @@ abstract class DownloadBase with Store {
   void recoveryFromStorage(){
     if(__prefs.getKeys().contains('downloads')){
       downloads = json.decode(__prefs.getString('downloads')!).map((key, value){
-        print(value);
+        print('message download recovery data: $value');
         return MapEntry(key,DownloadItem.fromJson(value));
       }).cast<String,DownloadItem>();
-      _queue.addAll(downloads.values);
     }
   }
 
   void update(){
-    __prefs.setString('downloads', json.encode(_queue));
+    print('message: ${json.encode(downloads)}');
+    __prefs.setString('downloads', json.encode(downloads));
   }
 
   final Api _api = Api();
@@ -57,12 +56,6 @@ abstract class DownloadBase with Store {
   final ValueNotifier<List<DownloadItem>> notifyList = ValueNotifier<List<DownloadItem>>([]);
 
 
-
-  @observable
-  ObservableList<DownloadItem> _queue = ObservableList<DownloadItem>();
-
-  @computed
-  ObservableList<DownloadItem> get queue => _queue;
 
   @action
   void initialize() {
@@ -85,24 +78,26 @@ abstract class DownloadBase with Store {
     var itemID = await _requestDownload(item);
     item.itemID = itemID;
 
-    _queue.add(item);
+    downloads[item.videoId] = item;
     update();
     developer.log(
       'Download Manager',
       name: 'br.tospendtime.download',
-      error: _queue.first.toJson(),
+      error: downloads,
     );
   }
 
   @action
   void updateProgress(id, status, progress) {
 
-    final item = _queue.firstWhere((it) => it.itemID == id);
-    item.status = status;
+    // final item = _queue.firstWhere((it) => it.itemID == id);
+    final item = downloads.values.firstWhere((element) => element.itemID == id);
+    item.status = status.value;
     item.progress = progress;
 
-    _queue.contains(item.itemID) ? _queue[_queue.indexWhere((e) => e.itemID == item.itemID)] = item : _queue;
-
+    // _queue.contains(item.itemID) ? _queue[_queue.indexWhere((e) => e.itemID == item.itemID)] = item : _queue;
+    downloads[item.videoId] = item;
+    update();
     notifier.value = notifier.value + 1;
   }
 
@@ -118,19 +113,16 @@ abstract class DownloadBase with Store {
     }
 
     _port.listen((data) async {
-      if (isDebug) {
-        print('UI Isolate Callback: $data');
-      }
+      // if (isDebug) {
+      //   print('UI Isolate Callback: $data');
+      // }
       //Recupera o progresso
       String? id = data[0];
       DownloadTaskStatus? status = data[1];
       int progress = data[2];
 
       //Caso a lista já esteja inicializada atualiza o progresso
-      if (_queue.isNotEmpty) {
-        updateProgress(id, status, progress);
-      }else{
-      }
+      updateProgress(id, status, progress);
     });
   }
 
@@ -196,15 +188,18 @@ abstract class DownloadBase with Store {
       await FlutterDownloader.pause(taskId: item.itemID!);
 
   void retryDownload(DownloadItem item) async {
-    queue.firstWhere((element) => element.videoId == item.videoId);
+    var data = downloads.values.firstWhere((element) => element.videoId == item.videoId);
 
     String? newTaskId = await FlutterDownloader.retry(taskId: item.itemID!);
-    item.itemID = newTaskId;
+    data.itemID = newTaskId;
+    downloads[data.videoId] = data;
   }
 
   void resumeDownload(DownloadItem item) async {
     String? newTaskId = await FlutterDownloader.resume(taskId: item.itemID!);
-    item.itemID = newTaskId;
+    final updatedItem = downloads.values.firstWhere((element) => element.itemID == item.itemID);
+    updatedItem.itemID = newTaskId;
+    downloads[item.videoId] = updatedItem;
   }
 
   void delete(DownloadItem item) async {

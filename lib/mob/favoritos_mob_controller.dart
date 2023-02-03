@@ -32,6 +32,7 @@ abstract class Favoritos with Store {
     }
   }
   void _updateStorage(){
+    print('Message favoritos ${json.encode(favoritos)}');
     prefs.setString("favoritos",json.encode(favoritos));
   }
   void toggleFavorite(Anime data){

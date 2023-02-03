@@ -65,11 +65,11 @@ class StreamPage extends StatelessWidget {
   void initializeController(_){
 
     BetterPlayerDataSource betterPlayerDataSource;
-    var data = getIt<DownloadMobController>().queue.toList();
-    var download = data.firstWhere((element) => element.videoId == _.videoId!,orElse: ()=> DownloadItem(name: 'fail', url: 'fail', videoId: 'fail'));
-    if(download.videoId != 'fail' && download.status == DownloadTaskStatus.complete){
+    var data = getIt<DownloadMobController>().downloads;
+
+    if(data[_.videoId]!.videoId != null && data[_.videoId]!.status == DownloadTaskStatus.complete.value){
       betterPlayerDataSource = BetterPlayerDataSource.file(
-        '${getIt<DownloadMobController>().localPath}/${download.videoId}.mp4'
+        '${getIt<DownloadMobController>().localPath}/${data[_.videoId]!.videoId}.mp4'
       );
     }
 

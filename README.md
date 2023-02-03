@@ -19,8 +19,9 @@ The application is in initial stage. can have bugs and performance issues on som
 ## Major Issues
 
 - [x] Stream does not work when the file is not synced to the device.
-- [x] Bookmarks do not load on startup.
-- [x] Download does not show progress in the interface.
+- [x] Bookmarks do not load on startup - solved.
+- [x] Download does not show progress in the interface - solved
+- [x] Unable to retrieve completed downloads when app is restarted - solved
 - [ ] Slow download speed.
 - [ ] When a search returns no data, it keeps loading forever
 - [ ] Unable to play downloaded content without internet connection
