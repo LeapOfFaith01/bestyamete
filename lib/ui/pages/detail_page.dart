@@ -7,12 +7,17 @@ import 'package:bestyamete/utils/helpers.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 
+import '../../controllers/DownloadController.dart';
 import '../../main.dart';
 import '../../models/download_item.dart';
+import '../../utils/persistence.dart';
 
 class DetailPage extends StatelessWidget {
-  const DetailPage({Key? key}) : super(key: key);
+  bool? isOfflinePage = false;
+
+  DetailPage({Key? key, this.isOfflinePage}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -25,12 +30,10 @@ class DetailPage extends StatelessWidget {
               ),
             ),
         error: () => Container(),
-        loaded: (_, __) {
-          developer.log(_.toString());
-          developer.log(__.toString());
+        loaded: (detalhes, episodios) {
           return Scaffold(
             appBar: AppBar(
-              title: Text(_.categoryName!),
+              title: Text(detalhes.categoryName!),
               backgroundColor: Colors.transparent,
               elevation: 0,
             ),
@@ -43,7 +46,7 @@ class DetailPage extends StatelessWidget {
                     height: MediaQuery.of(context).size.height * .40,
                     child: CachedNetworkImage(
                       httpHeaders: DataHelpers.baseHeaders,
-                      imageUrl: DataHelpers.baseImageUrl + _.categoryImage!,
+                      imageUrl: DataHelpers.baseImageUrl + detalhes.categoryImage!,
                       placeholder: (_, __) => CircularProgressIndicator(),
                       fit: BoxFit.fill,
                     ),
@@ -54,7 +57,7 @@ class DetailPage extends StatelessWidget {
                       fontSize: 20,
                       letterSpacing: 2,
                     )),
-                Text(_.categoryDescription!),
+                Text(detalhes.categoryDescription!),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -66,7 +69,7 @@ class DetailPage extends StatelessWidget {
                             letterSpacing: 2,
                           )),
                     ),
-                    Text('Ano: ${_.ano!}',
+                    Text('Ano: ${detalhes.ano!}',
                         style: TextStyle(
                           fontSize: 20,
                           letterSpacing: 2,
@@ -76,7 +79,7 @@ class DetailPage extends StatelessWidget {
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: _.categoryGenres!
+                  children: detalhes.categoryGenres!
                       .split(',')
                       .map((e) => Text(e.toString().trim()))
                       .toList(),
@@ -92,34 +95,34 @@ class DetailPage extends StatelessWidget {
                 Container(
                   height: MediaQuery.of(context).size.height * .50,
                   child: ListView.builder(
-                    itemCount: __.length,
+                    itemCount: episodios.length,
                     itemBuilder: (_, index) => ClipRRect(
                       borderRadius: BorderRadius.circular(10),
                       child: ListTile(
                           onTap: () {
                             context
                                 .read<StreamingBloc>()
-                                .add(StreamingEvent.load(__[index].videoId!));
+                                .add(StreamingEvent.load(episodios[index].videoId!));
                             Navigator.push(
                               context,
                               MaterialPageRoute(
                                   builder: (context) => StreamPage()),
                             );
                           },
-                          title: Text(__[index].title!),
+                          title: Text(episodios[index].title!),
                           trailing: ValueListenableBuilder(
                               valueListenable:
-                                  getIt<DownloadMobController>().notifier,
+                              GetIt.I<PersistenceHelper>().notifier,
                               builder: (context, notifier, child) {
                                 var downloads =
-                                    getIt<DownloadMobController>().downloads;
-                                return downloads.containsKey(__[index].videoId)
+                                    GetIt.I<PersistenceHelper>().downloads;
+                                return downloads.containsKey(episodios[index].videoId)
                                     ? buildActionForTask(
-                                        downloads[__[index].videoId]!)
+                                        downloads[episodios[index].videoId]!)
                                     : IconButton(
                                           onPressed: () {
-                                            getIt<DownloadMobController>()
-                                                .addDownload(__[index].videoId!);
+                                            GetIt.I<DownloadController>()
+                                                .addDownload(episodios[index].videoId!,detalhes);
                                           },
                                           icon: Icon(Icons.download));
                               })),
@@ -132,42 +135,3 @@ class DetailPage extends StatelessWidget {
         });
   }
 }
-
-// class DetailPage extends StatelessWidget {
-//   const DetailPage({Key? key}) : super(key: key);
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     final state = context.watch<DetailBloc>().state;
-//     return state.when(
-//         initial: () => Material(),
-//         loading: () => Material(
-//               child: CircularProgressIndicator(),
-//             ),
-//         error: () => Material(
-//               child: Center(
-//                 child: FlutterLogo(),
-//               ),
-//             ),
-//         loaded: (_, __) => Scaffold(
-//           appBar: AppBar(
-//             title: Text(_.categoryName!),
-//           ),
-//           body: Column(
-//             children: [
-//               Expanded(
-//                   flex:3,child: Row(
-//                 children: [
-//                   Expanded(flex:6,child: CachedNetworkImage(httpHeaders: DataHelpers.baseHeaders, imageUrl: '${DataHelpers.baseImageUrl}/${_.categoryImage}',fit: BoxFit.cover,)),
-//                   Expanded(flex:4,child: Text('TITULO DO ANIME PORRA'))
-//                 ],
-//               )),
-//               Expanded(
-//                 flex: 2,
-//                 child: Text('AA')
-//               )
-//             ],
-//           ),
-//         ));
-//   }
-// }

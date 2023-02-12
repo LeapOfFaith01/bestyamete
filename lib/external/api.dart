@@ -178,6 +178,4 @@ class Api{
 
     return List<Stream>.from(parsed.map((e) => Stream.fromJson(e)));
   }
-
-
 }

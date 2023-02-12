@@ -1,4 +1,5 @@
 import 'package:bestyamete/bloc/index.dart';
+import 'package:bestyamete/controllers/DownloadController.dart';
 import 'package:bestyamete/main.dart';
 import 'package:bestyamete/mob/download_mob_controller.dart';
 import 'package:bestyamete/models/download_item.dart';
@@ -7,6 +8,7 @@ import 'package:better_player_hls/better_player_hls.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
+import 'package:get_it/get_it.dart';
 
 class StreamPage extends StatelessWidget {
   StreamPage({Key? key}) : super(key: key);
@@ -65,11 +67,11 @@ class StreamPage extends StatelessWidget {
   void initializeController(_){
 
     BetterPlayerDataSource betterPlayerDataSource;
-    var data = getIt<DownloadMobController>().downloads;
+    var data = GetIt.I<DownloadController>().downloads;
 
     if(data[_.videoId]!.videoId != null && data[_.videoId]!.status == DownloadTaskStatus.complete.value){
       betterPlayerDataSource = BetterPlayerDataSource.file(
-        '${getIt<DownloadMobController>().localPath}/${data[_.videoId]!.videoId}.mp4'
+        '${GetIt.I<DownloadController>().localPath}/${data[_.videoId]!.videoId}.mp4'
       );
     }
 

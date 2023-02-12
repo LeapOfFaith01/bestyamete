@@ -1,19 +1,24 @@
 import 'package:bestyamete/bloc/index.dart';
+import 'package:bestyamete/controllers/DownloadController.dart';
 import 'package:bestyamete/mob/download_mob_controller.dart';
 import 'package:bestyamete/mob/favoritos_mob_controller.dart';
 import 'package:bestyamete/ui/pages/home_page.dart';
+import 'package:bestyamete/utils/persistence.dart';
 import 'package:bestyamete/utils/theme.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:get_it/get_it.dart';
-GetIt getIt = GetIt.instance;
-void main()async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await FlutterDownloader.initialize(debug: true, ignoreSsl: true);
 
-  getIt.registerSingleton<DownloadMobController>(DownloadMobController());
-  getIt.registerSingleton<FavoritosController>(FavoritosController());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await FlutterDownloader.initialize(ignoreSsl: true);
+
+  GetIt.I.registerSingleton<DownloadController>(DownloadController());
+  GetIt.I.registerSingleton<FavoritosController>(FavoritosController());
+  GetIt.I.registerSingleton<PersistenceHelper>(PersistenceHelper());
+
   runApp(MyApp());
 }
 
@@ -22,20 +27,24 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(providers: [
-      BlocProvider(create: (_) => LatestBloc()),
-      BlocProvider(create: (_) => DetailBloc()),
-      BlocProvider(create: (_) => PopularBloc()),
-      BlocProvider(create: (_) => SearchBloc()),
-      BlocProvider(create: (_) => StreamingBloc(),),
-    ], child: MaterialApp(
-      // debugShowCheckedModeBanner: false,
-      locale: Locale('pt-Br'),
-      theme: AppTheme.lightTheme,
-      darkTheme: AppTheme.darkTheme,
-      themeMode: ThemeMode.dark,
-      home: App(),
-    ));
+    return MultiBlocProvider(
+        providers: [
+          BlocProvider(create: (_) => LatestBloc()),
+          BlocProvider(create: (_) => DetailBloc()),
+          BlocProvider(create: (_) => PopularBloc()),
+          BlocProvider(create: (_) => SearchBloc()),
+          BlocProvider(
+            create: (_) => StreamingBloc(),
+          ),
+        ],
+        child: MaterialApp(
+          // debugShowCheckedModeBanner: false,
+          locale: Locale('pt-Br'),
+          theme: AppTheme.lightTheme,
+          darkTheme: AppTheme.darkTheme,
+          themeMode: ThemeMode.dark,
+          home: App(),
+        ));
   }
 }
 
@@ -50,10 +59,11 @@ class _AppState extends State<App> {
   @override
   void initState() {
     super.initState();
+    GetIt.I<PersistenceHelper>().initializePersistenceModule();
     context.read<LatestBloc>().add(const LatestEvent.load());
     context.read<PopularBloc>().add(const PopularEvent.load());
-    getIt<DownloadMobController>().initialize();
-    getIt<FavoritosController>().initialize();
+    GetIt.I<DownloadController>().initialize();
+    GetIt.I<FavoritosController>().initialize();
     // context.read<DownloadCubit>().initialize();
   }
 
@@ -62,6 +72,3 @@ class _AppState extends State<App> {
     return HomePage();
   }
 }
-
-
-

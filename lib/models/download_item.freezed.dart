@@ -26,6 +26,8 @@ mixin _$DownloadItem {
   set url(dynamic value) => throw _privateConstructorUsedError;
   dynamic get videoId => throw _privateConstructorUsedError;
   set videoId(dynamic value) => throw _privateConstructorUsedError;
+  String? get categoryId => throw _privateConstructorUsedError;
+  set categoryId(String? value) => throw _privateConstructorUsedError;
   String? get itemID => throw _privateConstructorUsedError;
   set itemID(String? value) => throw _privateConstructorUsedError;
   int get progress => throw _privateConstructorUsedError;
@@ -49,6 +51,7 @@ abstract class $DownloadItemCopyWith<$Res> {
       {String name,
       dynamic url,
       dynamic videoId,
+      String? categoryId,
       String? itemID,
       int progress,
       int? status});
@@ -70,6 +73,7 @@ class _$DownloadItemCopyWithImpl<$Res, $Val extends DownloadItem>
     Object? name = null,
     Object? url = freezed,
     Object? videoId = freezed,
+    Object? categoryId = freezed,
     Object? itemID = freezed,
     Object? progress = null,
     Object? status = freezed,
@@ -87,6 +91,10 @@ class _$DownloadItemCopyWithImpl<$Res, $Val extends DownloadItem>
           ? _value.videoId
           : videoId // ignore: cast_nullable_to_non_nullable
               as dynamic,
+      categoryId: freezed == categoryId
+          ? _value.categoryId
+          : categoryId // ignore: cast_nullable_to_non_nullable
+              as String?,
       itemID: freezed == itemID
           ? _value.itemID
           : itemID // ignore: cast_nullable_to_non_nullable
@@ -115,6 +123,7 @@ abstract class _$$_DownloadItemCopyWith<$Res>
       {String name,
       dynamic url,
       dynamic videoId,
+      String? categoryId,
       String? itemID,
       int progress,
       int? status});
@@ -134,6 +143,7 @@ class __$$_DownloadItemCopyWithImpl<$Res>
     Object? name = null,
     Object? url = freezed,
     Object? videoId = freezed,
+    Object? categoryId = freezed,
     Object? itemID = freezed,
     Object? progress = null,
     Object? status = freezed,
@@ -145,6 +155,10 @@ class __$$_DownloadItemCopyWithImpl<$Res>
               as String,
       url: freezed == url ? _value.url! : url,
       videoId: freezed == videoId ? _value.videoId! : videoId,
+      categoryId: freezed == categoryId
+          ? _value.categoryId
+          : categoryId // ignore: cast_nullable_to_non_nullable
+              as String?,
       itemID: freezed == itemID
           ? _value.itemID
           : itemID // ignore: cast_nullable_to_non_nullable
@@ -168,9 +182,10 @@ class _$_DownloadItem implements _DownloadItem {
       {required this.name,
       this.url,
       this.videoId,
+      this.categoryId,
       this.itemID,
       this.progress = 0,
-      this.status});
+      this.status = 0});
 
   factory _$_DownloadItem.fromJson(Map<String, dynamic> json) =>
       _$$_DownloadItemFromJson(json);
@@ -182,16 +197,19 @@ class _$_DownloadItem implements _DownloadItem {
   @override
   dynamic videoId;
   @override
+  String? categoryId;
+  @override
   String? itemID;
   @override
   @JsonKey()
   int progress;
   @override
+  @JsonKey()
   int? status;
 
   @override
   String toString() {
-    return 'DownloadItem(name: $name, url: $url, videoId: $videoId, itemID: $itemID, progress: $progress, status: $status)';
+    return 'DownloadItem(name: $name, url: $url, videoId: $videoId, categoryId: $categoryId, itemID: $itemID, progress: $progress, status: $status)';
   }
 
   @JsonKey(ignore: true)
@@ -213,6 +231,7 @@ abstract class _DownloadItem implements DownloadItem {
       {required String name,
       dynamic url,
       dynamic videoId,
+      String? categoryId,
       String? itemID,
       int progress,
       int? status}) = _$_DownloadItem;
@@ -229,6 +248,9 @@ abstract class _DownloadItem implements DownloadItem {
   @override
   dynamic get videoId;
   set videoId(dynamic value);
+  @override
+  String? get categoryId;
+  set categoryId(String? value);
   @override
   String? get itemID;
   set itemID(String? value);

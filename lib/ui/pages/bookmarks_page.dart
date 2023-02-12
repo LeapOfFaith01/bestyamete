@@ -6,8 +6,11 @@ import 'package:bestyamete/ui/widgets/anime_list_horizontal.dart';
 import 'package:bestyamete/ui/widgets/build_download_actions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 
+import '../../controllers/DownloadController.dart';
 import '../../main.dart';
+import '../../utils/persistence.dart';
 
 class Bookmarks extends StatelessWidget {
   const Bookmarks({Key? key}) : super(key: key);
@@ -31,9 +34,9 @@ class Bookmarks extends StatelessWidget {
         body: TabBarView(
           children: [
             ValueListenableBuilder(
-                valueListenable: getIt<FavoritosController>().notifier,
+                valueListenable: GetIt.I<FavoritosController>().notifier,
                 builder: (context, notifier, widget) {
-                  var data = getIt<FavoritosController>().favoritos;
+                  var data = GetIt.I<FavoritosController>().favoritos;
                   return data.values.length > 0
                       ? AnimeListHorizontal(data: data.values.toList())
                       : Center(
@@ -42,51 +45,33 @@ class Bookmarks extends StatelessWidget {
                         );
                 }),
             ValueListenableBuilder(
-                valueListenable: getIt<DownloadMobController>().notifier,
+                valueListenable: GetIt.I<PersistenceHelper>().notifier,
                 builder: (context, notifier, child) {
-                  var data = getIt<DownloadMobController>().downloads;
+                  var data = GetIt.I<PersistenceHelper>().downloads;
                   var keys = data.values.toList();
-                  return data.isNotEmpty ? ListView.builder(
-                      itemCount: keys.length,
-                      itemBuilder: (context, index) {
-                        return ListTile(
-                          title: Text(keys[index].name),
-                          onTap: () {
-                            context.read<StreamingBloc>().add(StreamingEvent
-                                .load(keys[index].videoId));
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => StreamPage()));
-                          },
-                          trailing: buildActionForTask(keys[index]),
+                  return data.isNotEmpty
+                      ? ListView.builder(
+                          itemCount: keys.length,
+                          itemBuilder: (context, index) {
+                            return ListTile(
+                              title: Text(keys[index].name),
+                              onTap: () {
+                                context.read<StreamingBloc>().add(
+                                    StreamingEvent.load(keys[index].videoId));
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => StreamPage()));
+                              },
+                              trailing: buildActionForTask(keys[index]),
+                            );
+                          })
+                      : Center(
+                          child:
+                              Text('Parece que você não possui downloads :('),
                         );
-                      }
-                  ) : Center(
-                    child:
-                    Text('Parece que você não possui downloads :('),
-                  );
-                  //   return data.length > 0
-                  //       ? ListView.builder(
-                  //           itemCount: data.length,
-                  //           itemBuilder: (context, index) {
-                  //             return ListTile(
-                  //               title: Text(data[index].name),
-                  //               onTap: () {
-                  //                 Navigator.push(
-                  //                     context,
-                  //                     MaterialPageRoute(
-                  //                         builder: (context) => StreamPage()));
-                  //               },
-                  //               trailing: buildActionForTask(data[index]),
-                  //             );
-                  //           })
-                  //       : Center(
-                  //           child:
-                  //               Text('Parece que você não possui downloads :('),
-                  //         );
-                  // })
-                })],
+                })
+          ],
         ),
       ),
     );

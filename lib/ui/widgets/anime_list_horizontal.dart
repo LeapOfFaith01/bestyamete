@@ -6,9 +6,11 @@ import 'package:bestyamete/utils/helpers.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 
 import '../../main.dart';
 import '../../models/api_interfaces.dart';
+import '../../utils/persistence.dart';
 
 class AnimeListHorizontal extends StatelessWidget {
   final List<Anime> data;
@@ -40,7 +42,7 @@ class AnimeListHorizontal extends StatelessWidget {
                       .add(DetailEvent.load(data[__].id!));
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const DetailPage()),
+                MaterialPageRoute(builder: (context) => DetailPage()),
               );
             } else {
               if (data[__].videoId != null) {
@@ -56,13 +58,14 @@ class AnimeListHorizontal extends StatelessWidget {
           },
           child: GridTile(
               child: Container(
-                color: Colors.black45,
-                child: Row(
-            children: [
+            color: Colors.black45,
+            child: Row(
+              children: [
                 Expanded(
                   flex: 4,
                   child: CachedNetworkImage(
-                    imageUrl: DataHelpers.baseImageUrl + data[__].categoryImage!,
+                    imageUrl:
+                        DataHelpers.baseImageUrl + data[__].categoryImage!,
                     httpHeaders: DataHelpers.baseHeaders,
                     fit: BoxFit.cover,
                   ),
@@ -71,47 +74,63 @@ class AnimeListHorizontal extends StatelessWidget {
                     flex: 6,
                     child: Column(
                       children: [
-                        isEpisode ? Container() : Align(
-                            alignment: Alignment.topRight,
-                            child: ValueListenableBuilder(
-                              valueListenable: getIt<FavoritosController>().notifier, builder: (BuildContext context, value, Widget? child) {
-                                var favs = getIt<FavoritosController>().favoritos;
-                              return favs.containsKey(data[__].id!)? IconButton(
-                                  onPressed: () {
-                                    getIt<FavoritosController>().toggleFavorite(data[__]);
-                                  }, icon: Icon(Icons.favorite)):IconButton(
-                                  onPressed: () {
-                                    getIt<FavoritosController>().toggleFavorite(data[__]);
-                                  }, icon: Icon(Icons.favorite_outline));
-                            },
-                            ))
-                        ,
+                        isEpisode
+                            ? Container()
+                            : Align(
+                                alignment: Alignment.topRight,
+                                child: ValueListenableBuilder(
+                                  valueListenable:
+                                  GetIt.I<PersistenceHelper>().notifier,
+                                  builder: (BuildContext context, value,
+                                      Widget? child) {
+                                    var favs =
+                                        GetIt.I<PersistenceHelper>().favoritos;
+                                    return favs.containsKey(data[__].id!)
+                                        ? IconButton(
+                                            onPressed: () {
+                                              GetIt.I<PersistenceHelper>()
+                                                  .toggleFavorite(data[__]);
+                                            },
+                                            icon: Icon(Icons.favorite))
+                                        : IconButton(
+                                            onPressed: () {
+                                              GetIt.I<PersistenceHelper>()
+                                                  .toggleFavorite(data[__]);
+                                            },
+                                            icon: Icon(Icons.favorite_outline));
+                                  },
+                                )),
                         Expanded(
                             child: Padding(
-                          padding: isEpisode ? EdgeInsets.symmetric(horizontal: 15):const EdgeInsets.only(left: 15.0,right: 15.0,top: 12.0),
-                          child: isEpisode ? Center(child: Text(
-                            data[__].title!,
-                            softWrap: false,
-                            maxLines: 4,
-                            style: TextStyle(
-                                fontSize: 15,
-                                overflow: TextOverflow.ellipsis
-                            ),
-                          ),):Text(
-                            data[__].categoryName!,
-                            softWrap: false,
-                            maxLines: 4,
-                            style: TextStyle(
-                                fontSize: 15,
-                                overflow: TextOverflow.ellipsis
-                            ),
-                          ),
+                          padding: isEpisode
+                              ? EdgeInsets.symmetric(horizontal: 15)
+                              : const EdgeInsets.only(
+                                  left: 15.0, right: 15.0, top: 12.0),
+                          child: isEpisode
+                              ? Center(
+                                  child: Text(
+                                    data[__].title!,
+                                    softWrap: false,
+                                    maxLines: 4,
+                                    style: TextStyle(
+                                        fontSize: 15,
+                                        overflow: TextOverflow.ellipsis),
+                                  ),
+                                )
+                              : Text(
+                                  data[__].categoryName!,
+                                  softWrap: false,
+                                  maxLines: 4,
+                                  style: TextStyle(
+                                      fontSize: 15,
+                                      overflow: TextOverflow.ellipsis),
+                                ),
                         ))
                       ],
                     ))
-            ],
-          ),
-              )),
+              ],
+            ),
+          )),
         ),
       ),
     );

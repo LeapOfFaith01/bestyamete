@@ -6,12 +6,14 @@ class AppTheme {
   const AppTheme._();
 
   static final lightTheme = ThemeData(
+    useMaterial3: true,
     primarySwatch: Colors.red,
     visualDensity: VisualDensity.adaptivePlatformDensity,
     brightness: Brightness.light,
   );
 
   static final darkTheme = ThemeData(
+    useMaterial3: true,
     visualDensity: VisualDensity.adaptivePlatformDensity,
     brightness: Brightness.dark,
   );

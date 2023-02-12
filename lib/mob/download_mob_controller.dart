@@ -49,13 +49,7 @@ abstract class DownloadBase with Store {
   late bool _permissionReady;
   late String localPath;
 
-
-
   final ValueNotifier<int> notifier = ValueNotifier(0);
-
-  final ValueNotifier<List<DownloadItem>> notifyList = ValueNotifier<List<DownloadItem>>([]);
-
-
 
   @action
   void initialize() {

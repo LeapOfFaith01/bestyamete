@@ -20,18 +20,21 @@ mixin _$DetailEvent {
   TResult when<TResult extends Object?>({
     required TResult Function() started,
     required TResult Function(String id) load,
+    required TResult Function(String id) loadOffline,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? started,
     TResult? Function(String id)? load,
+    TResult? Function(String id)? loadOffline,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? started,
     TResult Function(String id)? load,
+    TResult Function(String id)? loadOffline,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -39,18 +42,21 @@ mixin _$DetailEvent {
   TResult map<TResult extends Object?>({
     required TResult Function(_Started value) started,
     required TResult Function(_Load value) load,
+    required TResult Function(_LoadOffline value) loadOffline,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(_Started value)? started,
     TResult? Function(_Load value)? load,
+    TResult? Function(_LoadOffline value)? loadOffline,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(_Started value)? started,
     TResult Function(_Load value)? load,
+    TResult Function(_LoadOffline value)? loadOffline,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -113,6 +119,7 @@ class _$_Started implements _Started {
   TResult when<TResult extends Object?>({
     required TResult Function() started,
     required TResult Function(String id) load,
+    required TResult Function(String id) loadOffline,
   }) {
     return started();
   }
@@ -122,6 +129,7 @@ class _$_Started implements _Started {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? started,
     TResult? Function(String id)? load,
+    TResult? Function(String id)? loadOffline,
   }) {
     return started?.call();
   }
@@ -131,6 +139,7 @@ class _$_Started implements _Started {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? started,
     TResult Function(String id)? load,
+    TResult Function(String id)? loadOffline,
     required TResult orElse(),
   }) {
     if (started != null) {
@@ -144,6 +153,7 @@ class _$_Started implements _Started {
   TResult map<TResult extends Object?>({
     required TResult Function(_Started value) started,
     required TResult Function(_Load value) load,
+    required TResult Function(_LoadOffline value) loadOffline,
   }) {
     return started(this);
   }
@@ -153,6 +163,7 @@ class _$_Started implements _Started {
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(_Started value)? started,
     TResult? Function(_Load value)? load,
+    TResult? Function(_LoadOffline value)? loadOffline,
   }) {
     return started?.call(this);
   }
@@ -162,6 +173,7 @@ class _$_Started implements _Started {
   TResult maybeMap<TResult extends Object?>({
     TResult Function(_Started value)? started,
     TResult Function(_Load value)? load,
+    TResult Function(_LoadOffline value)? loadOffline,
     required TResult orElse(),
   }) {
     if (started != null) {
@@ -239,6 +251,7 @@ class _$_Load implements _Load {
   TResult when<TResult extends Object?>({
     required TResult Function() started,
     required TResult Function(String id) load,
+    required TResult Function(String id) loadOffline,
   }) {
     return load(id);
   }
@@ -248,6 +261,7 @@ class _$_Load implements _Load {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? started,
     TResult? Function(String id)? load,
+    TResult? Function(String id)? loadOffline,
   }) {
     return load?.call(id);
   }
@@ -257,6 +271,7 @@ class _$_Load implements _Load {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? started,
     TResult Function(String id)? load,
+    TResult Function(String id)? loadOffline,
     required TResult orElse(),
   }) {
     if (load != null) {
@@ -270,6 +285,7 @@ class _$_Load implements _Load {
   TResult map<TResult extends Object?>({
     required TResult Function(_Started value) started,
     required TResult Function(_Load value) load,
+    required TResult Function(_LoadOffline value) loadOffline,
   }) {
     return load(this);
   }
@@ -279,6 +295,7 @@ class _$_Load implements _Load {
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(_Started value)? started,
     TResult? Function(_Load value)? load,
+    TResult? Function(_LoadOffline value)? loadOffline,
   }) {
     return load?.call(this);
   }
@@ -288,6 +305,7 @@ class _$_Load implements _Load {
   TResult maybeMap<TResult extends Object?>({
     TResult Function(_Started value)? started,
     TResult Function(_Load value)? load,
+    TResult Function(_LoadOffline value)? loadOffline,
     required TResult orElse(),
   }) {
     if (load != null) {
@@ -303,6 +321,145 @@ abstract class _Load implements DetailEvent {
   String get id;
   @JsonKey(ignore: true)
   _$$_LoadCopyWith<_$_Load> get copyWith => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$_LoadOfflineCopyWith<$Res> {
+  factory _$$_LoadOfflineCopyWith(
+          _$_LoadOffline value, $Res Function(_$_LoadOffline) then) =
+      __$$_LoadOfflineCopyWithImpl<$Res>;
+  @useResult
+  $Res call({String id});
+}
+
+/// @nodoc
+class __$$_LoadOfflineCopyWithImpl<$Res>
+    extends _$DetailEventCopyWithImpl<$Res, _$_LoadOffline>
+    implements _$$_LoadOfflineCopyWith<$Res> {
+  __$$_LoadOfflineCopyWithImpl(
+      _$_LoadOffline _value, $Res Function(_$_LoadOffline) _then)
+      : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? id = null,
+  }) {
+    return _then(_$_LoadOffline(
+      null == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as String,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$_LoadOffline implements _LoadOffline {
+  const _$_LoadOffline(this.id);
+
+  @override
+  final String id;
+
+  @override
+  String toString() {
+    return 'DetailEvent.loadOffline(id: $id)';
+  }
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$_LoadOffline &&
+            (identical(other.id, id) || other.id == id));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, id);
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$_LoadOfflineCopyWith<_$_LoadOffline> get copyWith =>
+      __$$_LoadOfflineCopyWithImpl<_$_LoadOffline>(this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function() started,
+    required TResult Function(String id) load,
+    required TResult Function(String id) loadOffline,
+  }) {
+    return loadOffline(id);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function()? started,
+    TResult? Function(String id)? load,
+    TResult? Function(String id)? loadOffline,
+  }) {
+    return loadOffline?.call(id);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function()? started,
+    TResult Function(String id)? load,
+    TResult Function(String id)? loadOffline,
+    required TResult orElse(),
+  }) {
+    if (loadOffline != null) {
+      return loadOffline(id);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(_Started value) started,
+    required TResult Function(_Load value) load,
+    required TResult Function(_LoadOffline value) loadOffline,
+  }) {
+    return loadOffline(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(_Started value)? started,
+    TResult? Function(_Load value)? load,
+    TResult? Function(_LoadOffline value)? loadOffline,
+  }) {
+    return loadOffline?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(_Started value)? started,
+    TResult Function(_Load value)? load,
+    TResult Function(_LoadOffline value)? loadOffline,
+    required TResult orElse(),
+  }) {
+    if (loadOffline != null) {
+      return loadOffline(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class _LoadOffline implements DetailEvent {
+  const factory _LoadOffline(final String id) = _$_LoadOffline;
+
+  String get id;
+  @JsonKey(ignore: true)
+  _$$_LoadOfflineCopyWith<_$_LoadOffline> get copyWith =>
+      throw _privateConstructorUsedError;
 }
 
 /// @nodoc

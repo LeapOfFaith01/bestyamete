@@ -7,6 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'dart:developer' as developer;
 
+import 'package:flutter_downloader/flutter_downloader.dart';
+
 class HomePage extends StatelessWidget {
   const HomePage({Key? key}) : super(key: key);
 
@@ -18,11 +20,12 @@ class HomePage extends StatelessWidget {
       length: 2,
       child: Scaffold(
         floatingActionButton: FloatingActionButton(
-          onPressed: (){
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => Bookmarks()),
-            );
+          onPressed: ()async{
+            print(await FlutterDownloader.loadTasks());
+            // Navigator.push(
+            //   context,
+            //   MaterialPageRoute(builder: (context) => Bookmarks()),
+            // );
           },
           child: Icon(Icons.bookmark),
         ),
