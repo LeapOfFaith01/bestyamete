@@ -114,6 +114,9 @@ class Api{
     //Formata o corpo semi gzip para utf8
     var normalized = _normalize(response.bodyBytes);
 
+    if(normalized.toString().trim() == 'null'){
+      return [];
+    }
     Iterable parsed = await json.decode(normalized);
 
     return List<Anime>.from(parsed.map((e) => Anime.fromJson(e)));

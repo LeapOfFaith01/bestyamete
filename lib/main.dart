@@ -1,7 +1,5 @@
 import 'package:bestyamete/bloc/index.dart';
-import 'package:bestyamete/controllers/DownloadController.dart';
-import 'package:bestyamete/mob/download_mob_controller.dart';
-import 'package:bestyamete/mob/favoritos_mob_controller.dart';
+import 'package:bestyamete/controllers/download_controller.dart';
 import 'package:bestyamete/ui/pages/home_page.dart';
 import 'package:bestyamete/utils/persistence.dart';
 import 'package:bestyamete/utils/theme.dart';
@@ -10,14 +8,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:get_it/get_it.dart';
 
+import 'controllers/favoritos_controller.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await FlutterDownloader.initialize(ignoreSsl: true);
 
   GetIt.I.registerSingleton<DownloadController>(DownloadController());
-  GetIt.I.registerSingleton<FavoritosController>(FavoritosController());
   GetIt.I.registerSingleton<PersistenceHelper>(PersistenceHelper());
+  GetIt.I.registerSingleton<FavoritosController>(FavoritosController());
 
   runApp(MyApp());
 }
@@ -40,6 +40,7 @@ class MyApp extends StatelessWidget {
         child: MaterialApp(
           // debugShowCheckedModeBanner: false,
           locale: Locale('pt-Br'),
+          debugShowCheckedModeBanner: false,
           theme: AppTheme.lightTheme,
           darkTheme: AppTheme.darkTheme,
           themeMode: ThemeMode.dark,

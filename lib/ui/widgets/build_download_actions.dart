@@ -1,16 +1,15 @@
-import 'package:bestyamete/mob/download_mob_controller.dart';
+import 'package:bestyamete/controllers/download_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:get_it/get_it.dart';
 
-import '../../main.dart';
 import '../../models/download_item.dart';
 
-Widget buildActionForTask(DownloadItem item) {
+Widget buildActionForTask(DownloadItem item, detalhe) {
   if (item.status == DownloadTaskStatus.undefined.value) {
     return RawMaterialButton(
       onPressed: () {
-        GetIt.I<DownloadMobController>().addDownload(item);
+        GetIt.I<DownloadController>().addDownload(item, detalhe);
       },
       child: Icon(Icons.file_download),
       shape: CircleBorder(),
@@ -20,7 +19,7 @@ Widget buildActionForTask(DownloadItem item) {
   else if (item.status == DownloadTaskStatus.enqueued.value) {
     return RawMaterialButton(
       onPressed: () {
-        GetIt.I<DownloadMobController>().addDownload(item);
+        // GetIt.I<DownloadController>().addDownload(item);
       },
       child: Icon(Icons.ac_unit),
       shape: CircleBorder(),
@@ -30,7 +29,7 @@ Widget buildActionForTask(DownloadItem item) {
   else if (item.status == DownloadTaskStatus.running.value) {
     return RawMaterialButton(
       onPressed: () {
-        GetIt.I<DownloadMobController>().pauseDownload(item);
+        GetIt.I<DownloadController>().pauseDownload(item);
       },
       shape: CircleBorder(),
       constraints: BoxConstraints(minHeight: 32.0, minWidth: 32.0),
@@ -42,7 +41,7 @@ Widget buildActionForTask(DownloadItem item) {
   else if (item.status == DownloadTaskStatus.paused.value) {
     return RawMaterialButton(
       onPressed: () {
-        GetIt.I<DownloadMobController>().resumeDownload(item);
+        GetIt.I<DownloadController>().resumeDownload(item);
       },
       child: Icon(
         Icons.play_arrow,
@@ -96,7 +95,7 @@ Widget buildActionForTask(DownloadItem item) {
         Text('Failed', style: TextStyle(color: Colors.red)),
         RawMaterialButton(
           onPressed: () {
-            GetIt.I<DownloadMobController>().retryDownload(item);
+            GetIt.I<DownloadController>().retryDownload(item);
           },
           child: Icon(
             Icons.refresh,

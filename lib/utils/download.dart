@@ -7,6 +7,7 @@ import 'package:flutter_downloader/flutter_downloader.dart';
 import '../models/download_item.dart';
 
 class DownloadHelper{
+
   @pragma('vm:entry-point')
   static void downloadCallback(
       String id, DownloadTaskStatus status, int progress) {

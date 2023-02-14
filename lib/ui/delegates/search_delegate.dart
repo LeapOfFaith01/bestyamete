@@ -46,7 +46,7 @@ class AnimeSearchDelegate extends SearchDelegate<String>{
             initial: () => Container(),
             loading: () =>Center(child: CircularProgressIndicator(),),
             error: () =>FlutterLogo(),
-            loaded: (_) => AnimeListHorizontal(data: _)
+            loaded: (_) => _.isEmpty ? Center(child: Text('Nada foi encontrado :/'),):AnimeListHorizontal(data: _)
         );
       },
     );

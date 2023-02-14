@@ -42,7 +42,7 @@ class PersistenceHelper{
           }).cast<String, Detalhes>();
     }
     if (_prefs.getKeys().contains('favoritos')) {
-      detalhes =
+      favoritos =
           json.decode(_prefs.getString('favoritos')!).map((key, value) {
             return MapEntry(key, Anime.fromJson(value));
           }).cast<String, Anime>();

@@ -1,7 +1,7 @@
 import 'package:bestyamete/bloc/index.dart';
-import 'package:bestyamete/mob/favoritos_mob_controller.dart';
 import 'package:bestyamete/ui/pages/detail_page.dart';
 import 'package:bestyamete/ui/pages/stream_page.dart';
+import 'package:bestyamete/utils/connectivity.dart';
 import 'package:bestyamete/utils/helpers.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -31,19 +31,35 @@ class AnimeListHorizontal extends StatelessWidget {
       itemBuilder: (context, __) => ClipRRect(
         borderRadius: BorderRadius.circular(15),
         child: GestureDetector(
-          onTap: () {
+          onTap: () async {
             if (!isEpisode) {
-              data[__].id == null
-                  ? context
-                      .read<DetailBloc>()
-                      .add(DetailEvent.load(data[__].categoryId!))
-                  : context
-                      .read<DetailBloc>()
-                      .add(DetailEvent.load(data[__].id!));
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => DetailPage()),
-              );
+              if(await ConnectivityHelper.isOnline()){
+                data[__].id == null
+                    ? context
+                    .read<DetailBloc>()
+                    .add(DetailEvent.load(data[__].categoryId!))
+                    : context
+                    .read<DetailBloc>()
+                    .add(DetailEvent.load(data[__].id!));
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => DetailPage()),
+                );
+              }else{
+                data[__].id == null
+                    ? context
+                    .read<DetailBloc>()
+                    .add(DetailEvent.loadOffline(data[__].categoryId!))
+                    : context
+                    .read<DetailBloc>()
+                    .add(DetailEvent.loadOffline(data[__].id!));
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => DetailPage()),
+                );
+              }
+
+
             } else {
               if (data[__].videoId != null) {
                 context

@@ -1,9 +1,7 @@
 import 'package:bestyamete/bloc/index.dart';
-import 'package:bestyamete/controllers/DownloadController.dart';
-import 'package:bestyamete/main.dart';
-import 'package:bestyamete/mob/download_mob_controller.dart';
-import 'package:bestyamete/models/download_item.dart';
+import 'package:bestyamete/controllers/download_controller.dart';
 import 'package:bestyamete/utils/helpers.dart';
+import 'package:bestyamete/utils/persistence.dart';
 import 'package:better_player_hls/better_player_hls.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -66,14 +64,23 @@ class StreamPage extends StatelessWidget {
   //The parameter is the data used to fill the controller retrieved from StreamingBlocState
   void initializeController(_){
 
-    BetterPlayerDataSource betterPlayerDataSource;
-    var data = GetIt.I<DownloadController>().downloads;
+    late BetterPlayerDataSource betterPlayerDataSource;
+    var data = GetIt.I<PersistenceHelper>().downloads;
 
-    if(data[_.videoId]!.videoId != null && data[_.videoId]!.status == DownloadTaskStatus.complete.value){
-      betterPlayerDataSource = BetterPlayerDataSource.file(
-        '${GetIt.I<DownloadController>().localPath}/${data[_.videoId]!.videoId}.mp4'
-      );
+    if(data.containsKey(_.videoId)){
+      if(data[_.videoId]?.status == DownloadTaskStatus.complete.value){
+        betterPlayerDataSource = BetterPlayerDataSource.file(
+            '${GetIt.I<DownloadController>().localPath}/${data[_.videoId]!.videoId}.mp4'
+        );
+      }
     }
+
+    //Broken Code
+    // if(data[_.videoId]!.videoId != null && data[_.videoId]!.status == DownloadTaskStatus.complete.value){
+    //   betterPlayerDataSource = BetterPlayerDataSource.file(
+    //     '${GetIt.I<DownloadController>().localPath}/${data[_.videoId]!.videoId}.mp4'
+    //   );
+    // }
 
     //If have two data sources initialize with two video quality options
     else if(_.location!.isNotEmpty && _.locationsd!.isNotEmpty ){

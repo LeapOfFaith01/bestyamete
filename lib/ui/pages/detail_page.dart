@@ -1,6 +1,5 @@
 import 'dart:developer' as developer;
 import 'package:bestyamete/bloc/index.dart';
-import 'package:bestyamete/mob/download_mob_controller.dart';
 import 'package:bestyamete/ui/pages/stream_page.dart';
 import 'package:bestyamete/ui/widgets/build_download_actions.dart';
 import 'package:bestyamete/utils/helpers.dart';
@@ -9,9 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 
-import '../../controllers/DownloadController.dart';
-import '../../main.dart';
-import '../../models/download_item.dart';
+import '../../controllers/download_controller.dart';
 import '../../utils/persistence.dart';
 
 class DetailPage extends StatelessWidget {
@@ -92,6 +89,37 @@ class DetailPage extends StatelessWidget {
                         letterSpacing: 2,
                       )),
                 ),
+                // ..episodios.map((e) => ClipRRect(
+                //   borderRadius: BorderRadius.circular(10),
+                //   child: ListTile(
+                //       onTap: () {
+                //         context
+                //             .read<StreamingBloc>()
+                //             .add(StreamingEvent.load(e.videoId!));
+                //         Navigator.push(
+                //           context,
+                //           MaterialPageRoute(
+                //               builder: (context) => StreamPage()),
+                //         );
+                //       },
+                //       title: Text(e.title!),
+                //       trailing: ValueListenableBuilder(
+                //           valueListenable:
+                //           GetIt.I<PersistenceHelper>().notifier,
+                //           builder: (context, notifier, child) {
+                //             var downloads =
+                //                 GetIt.I<PersistenceHelper>().downloads;
+                //             return downloads.containsKey(e.videoId)
+                //                 ? buildActionForTask(
+                //                 downloads[e.videoId]!,detalhes)
+                //                 : IconButton(
+                //                 onPressed: () {
+                //                   GetIt.I<DownloadController>()
+                //                       .addDownload(e.videoId!,detalhes);
+                //                 },
+                //                 icon: Icon(Icons.download));
+                //           })),
+                // ),).toList()
                 Container(
                   height: MediaQuery.of(context).size.height * .50,
                   child: ListView.builder(
@@ -118,7 +146,7 @@ class DetailPage extends StatelessWidget {
                                     GetIt.I<PersistenceHelper>().downloads;
                                 return downloads.containsKey(episodios[index].videoId)
                                     ? buildActionForTask(
-                                        downloads[episodios[index].videoId]!)
+                                        downloads[episodios[index].videoId]!,detalhes)
                                     : IconButton(
                                           onPressed: () {
                                             GetIt.I<DownloadController>()
