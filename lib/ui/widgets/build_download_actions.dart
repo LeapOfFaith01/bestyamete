@@ -21,6 +21,9 @@ Widget buildActionForTask(DownloadItem item, detalhe) {
       onPressed: () {
         // GetIt.I<DownloadController>().addDownload(item);
       },
+      onLongPress: (){
+        GetIt.I<DownloadController>().delete(item);
+      },
       child: Icon(Icons.ac_unit),
       shape: CircleBorder(),
       constraints: BoxConstraints(minHeight: 32.0, minWidth: 32.0),
@@ -30,6 +33,10 @@ Widget buildActionForTask(DownloadItem item, detalhe) {
     return RawMaterialButton(
       onPressed: () {
         GetIt.I<DownloadController>().pauseDownload(item);
+      },
+      onLongPress: ()async {
+        // GetIt.I<DownloadController>().delete(item);
+        await FlutterDownloader.cancelAll();
       },
       shape: CircleBorder(),
       constraints: BoxConstraints(minHeight: 32.0, minWidth: 32.0),
@@ -43,6 +50,9 @@ Widget buildActionForTask(DownloadItem item, detalhe) {
       onPressed: () {
         GetIt.I<DownloadController>().resumeDownload(item);
       },
+      onLongPress: (){
+        GetIt.I<DownloadController>().delete(item);
+      },
       child: Icon(
         Icons.play_arrow,
         color: Colors.green,
@@ -50,10 +60,14 @@ Widget buildActionForTask(DownloadItem item, detalhe) {
       shape: CircleBorder(),
       constraints: BoxConstraints(minHeight: 32.0, minWidth: 32.0),
     );
-  }else if (item.status == DownloadTaskStatus.paused.value) {
+  }
+  else if (item.status == DownloadTaskStatus.canceled.value) {
     return RawMaterialButton(
-      onPressed: () {
-        // GetIt.I<DownloadMobController>().resumeDownload(item);
+      onPressed: () async  {
+        GetIt.I<DownloadController>().retryDownload(item);
+      },
+      onLongPress: (){
+        GetIt.I<DownloadController>().delete(item);
       },
       child: Icon(
         Icons.info,
@@ -74,7 +88,10 @@ Widget buildActionForTask(DownloadItem item, detalhe) {
         ),
         RawMaterialButton(
           onPressed: () {
-
+            GetIt.I<DownloadController>().delete(item);
+          },
+          onLongPress: (){
+            GetIt.I<DownloadController>().delete(item);
           },
           child: Icon(
             Icons.delete_forever,
@@ -86,7 +103,6 @@ Widget buildActionForTask(DownloadItem item, detalhe) {
       ],
     );
   }
-
   else if (item.status == DownloadTaskStatus.failed.value) {
     return Row(
       mainAxisSize: MainAxisSize.min,
@@ -97,6 +113,9 @@ Widget buildActionForTask(DownloadItem item, detalhe) {
           onPressed: () {
             GetIt.I<DownloadController>().retryDownload(item);
           },
+          onLongPress: (){
+            GetIt.I<DownloadController>().delete(item);
+          },
           child: Icon(
             Icons.refresh,
             color: Colors.green,
@@ -106,15 +125,18 @@ Widget buildActionForTask(DownloadItem item, detalhe) {
         )
       ],
     );
-  }else{
-    return SizedBox(height: 50,width: 50,);
+  }
+  else {
+    return SizedBox(
+      height: 50,
+      width: 50,
+    );
   }
 }
 
 class ProgressWithIcon extends StatelessWidget {
   final double progress;
   const ProgressWithIcon({Key? key, required this.progress}) : super(key: key);
-
 
   @override
   Widget build(BuildContext context) {
@@ -129,10 +151,11 @@ class ProgressWithIcon extends StatelessWidget {
             color: Colors.red,
           ),
           // you can replace
-          progress > 0 ?
-          CircularProgressIndicator(
-            value: progress / 100,
-          ): CircularProgressIndicator(),
+          progress > 0
+              ? CircularProgressIndicator(
+                  value: progress / 100,
+                )
+              : CircularProgressIndicator(),
         ],
       ),
     );

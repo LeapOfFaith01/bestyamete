@@ -23,6 +23,7 @@ The application is in initial stage. can have bugs and performance issues on som
 - [x] Download does not show progress in the interface - solved
 - [x] Unable to retrieve completed downloads when app is restarted - solved
 - [x] Unable to play when you dont have a downloaded file 
+- [] Unable to retry a new download when the old one fail.
 - [ ] Slow download speed.
 - [ ] When a search returns no data, it keeps loading forever
 - [ ] Unable to play downloaded content without internet connection

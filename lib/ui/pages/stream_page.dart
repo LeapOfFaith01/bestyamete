@@ -69,45 +69,14 @@ class StreamPage extends StatelessWidget {
 
     if(data.containsKey(_.videoId)){
       if(data[_.videoId]?.status == DownloadTaskStatus.complete.value){
-        betterPlayerDataSource = BetterPlayerDataSource.file(
-            '${GetIt.I<DownloadController>().localPath}/${data[_.videoId]!.videoId}.mp4'
-        );
+        betterPlayerDataSource = buildDataSourceLocal(data, _);
+      }else{
+        betterPlayerDataSource = buildDataSourceNetwork(data, _);
       }
     }
-
-    //Broken Code
-    // if(data[_.videoId]!.videoId != null && data[_.videoId]!.status == DownloadTaskStatus.complete.value){
-    //   betterPlayerDataSource = BetterPlayerDataSource.file(
-    //     '${GetIt.I<DownloadController>().localPath}/${data[_.videoId]!.videoId}.mp4'
-    //   );
-    // }
+    betterPlayerDataSource = buildDataSourceNetwork(data, _);
 
     //If have two data sources initialize with two video quality options
-    else if(_.location!.isNotEmpty && _.locationsd!.isNotEmpty ){
-      betterPlayerDataSource = BetterPlayerDataSource(
-          BetterPlayerDataSourceType.network,
-          _.location == null ? _.locationsd! : _.location!,headers: DataHelpers.baseHeaders,
-          resolutions: {
-            "SD":_.location!,
-            "HD":_.locationsd!
-          },
-          notificationConfiguration: BetterPlayerNotificationConfiguration(
-              showNotification: true,
-              title: _.title!,
-              author: "Yamete Kudasai"
-          ));
-
-      //If only have one data source initialize with only one video quality option
-    }else{
-      betterPlayerDataSource = BetterPlayerDataSource(
-          BetterPlayerDataSourceType.network,
-          _.location == null ? _.locationsd! : _.location!,headers: DataHelpers.baseHeaders,
-          notificationConfiguration: BetterPlayerNotificationConfiguration(
-              showNotification: true,
-              title: _.title!,
-              author: "Yamete Kudasai"
-          ));
-    }
     //Setup controller
     betterPlayerController = BetterPlayerController(
         BetterPlayerConfiguration(
@@ -135,4 +104,38 @@ class StreamPage extends StatelessWidget {
         ),
         betterPlayerDataSource: betterPlayerDataSource);
   }}
+
+BetterPlayerDataSource buildDataSourceNetwork(data, item){
+  if(item.location!.isNotEmpty && item.locationsd!.isNotEmpty ){
+    return BetterPlayerDataSource(
+        BetterPlayerDataSourceType.network,
+        item.location == null ? item.locationsd! : item.location!,headers: DataHelpers.baseHeaders,
+        resolutions: {
+          "SD":item.location!,
+          "HD":item.locationsd!
+        },
+        notificationConfiguration: BetterPlayerNotificationConfiguration(
+            showNotification: true,
+            title: item.title!,
+            author: "Yamete Kudasai"
+        ));
+
+    //If only have one data source initialize with only one video quality option
+  }else{
+    return BetterPlayerDataSource(
+        BetterPlayerDataSourceType.network,
+         item.location == null ? item.locationsd! : item.location!,headers: DataHelpers.baseHeaders,
+        notificationConfiguration: BetterPlayerNotificationConfiguration(
+            showNotification: true,
+            title: item.title!,
+            author: "Yamete Kudasai"
+        ));
+  }
+}
+
+BetterPlayerDataSource buildDataSourceLocal(data, item){
+  return BetterPlayerDataSource.file(
+      '${GetIt.I<DownloadController>().localPath}/${data[item.videoId]!.videoId}.mp4'
+  );
+}
 

@@ -30,48 +30,6 @@ class DownloadController {
 
   String? localPath;
 
-  //Persistent data variables
-  final Future<SharedPreferences> _prefsInstance =
-      SharedPreferences.getInstance();
-  late final SharedPreferences __prefs;
-  Map<String, DownloadItem> downloads = {};
-  Map<String, Detalhes> detalhes ={};
-
-  //**
-  // Persistence functions
-  // InitializePersistenceModule initialize the __prefs variable and recovery the data from storage.
-  // **/
-  void initializePersistenceModule() async {
-    // __prefs = await _prefsInstance;
-    // _recoveryFromStorage();
-    _notify();
-  }
-
-  //Recovery and parse data from storage
-  void _recoveryFromStorage() {
-    if (__prefs.getKeys().contains('downloads')) {
-      downloads =
-          json.decode(__prefs.getString('downloads')!).map((key, value) {
-        return MapEntry(key, DownloadItem.fromJson(value));
-      }).cast<String, DownloadItem>();
-    }
-    if (__prefs.getKeys().contains('detalhes')) {
-      detalhes =
-          json.decode(__prefs.getString('detalhes')!).map((key, value) {
-            return MapEntry(key, Detalhes.fromJson(value));
-          }).cast<String, DownloadItem>();
-    }
-  }
-
-  void _registerOfflineDetailPage(){
-    __prefs.setString('detalhes', json.encode(detalhes));
-  }
-
-  //Update the information on storage
-  void _update() {
-    __prefs.setString('downloads', json.encode(downloads));
-  }
-
   //Download module related functions
   void initialize() async {
     persistenceHelper = GetIt.I<PersistenceHelper>();
@@ -104,7 +62,6 @@ class DownloadController {
     var itemID = await _requestDownload(item);
     item.itemID = itemID;
 
-    downloads[item.videoId] = item;
     persistenceHelper.downloads[item.videoId!] = item;
     persistenceHelper.update();
     persistenceHelper.notify();
@@ -113,12 +70,11 @@ class DownloadController {
 
   void updateProgress(id, status, progress) {
     // final item = _queue.firstWhere((it) => it.itemID == id);
-    final item = downloads.values.firstWhere((element) => element.itemID == id);
+    final item = persistenceHelper.downloads.values.firstWhere((element) => element.itemID == id);
     item.status = status.value;
     item.progress = progress;
 
     // _queue.contains(item.itemID) ? _queue[_queue.indexWhere((e) => e.itemID == item.itemID)] = item : _queue;
-    downloads[item.videoId] = item;
     persistenceHelper.downloads[item.videoId] = item;
     persistenceHelper.update();
     persistenceHelper.notify();
@@ -157,7 +113,7 @@ class DownloadController {
   Future<void> resumeDownload(DownloadItem item) async {
     String? newTaskId = await FlutterDownloader.resume(taskId: item.itemID!);
     final updatedItem =
-        downloads.values.firstWhere((element) => element.itemID == item.itemID);
+    persistenceHelper.downloads.values.firstWhere((element) => element.itemID == item.itemID);
     updatedItem.itemID = newTaskId;
     persistenceHelper.downloads[item.videoId] = updatedItem;
     persistenceHelper.notify();
@@ -166,6 +122,13 @@ class DownloadController {
   Future<void> delete(DownloadItem item) async {
     await FlutterDownloader.remove(
         taskId: item.itemID!, shouldDeleteContent: true);
+    persistenceHelper.downloads.remove(item.videoId);
+
+    if(persistenceHelper.downloads.values.where((element) => element.categoryId == item.categoryId).isEmpty){
+      persistenceHelper.detalhes.remove(item.categoryId);
+    }
+
+    persistenceHelper.notify();
     await permissionHelper.prepare();
   }
 }
