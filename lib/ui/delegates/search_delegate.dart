@@ -1,17 +1,11 @@
-import 'package:bestyamete/bloc/detail/detail_bloc.dart';
-import 'package:bestyamete/ui/pages/detail_page.dart';
 import 'package:bestyamete/ui/widgets/anime_list_horizontal.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../bloc/search/search_bloc.dart';
-import '../../bloc/streaming/streaming_bloc.dart';
-import '../../utils/helpers.dart';
-import '../pages/stream_page.dart';
-class AnimeSearchDelegate extends SearchDelegate<String>{
 
+class AnimeSearchDelegate extends SearchDelegate<String> {
   // SearchState getState(context) => context.watch<SearchBloc>().state;
 
   @override
@@ -21,7 +15,7 @@ class AnimeSearchDelegate extends SearchDelegate<String>{
 
   @override
   ThemeData appBarTheme(BuildContext context) {
-    return  Theme.of(context);
+    return Theme.of(context);
   }
 
   @override
@@ -37,17 +31,22 @@ class AnimeSearchDelegate extends SearchDelegate<String>{
 
   @override
   Widget buildResults(BuildContext context) {
+    if (query.isNotEmpty)
+      context.read<SearchBloc>().add(SearchEvent.load(query, SearchType.name));
 
-    if(query.isNotEmpty)context.read<SearchBloc>().add(SearchEvent.load(query,SearchType.name));
-
-    return BlocBuilder<SearchBloc,SearchState>(
-      builder: (context, state){
+    return BlocBuilder<SearchBloc, SearchState>(
+      builder: (context, state) {
         return state.when(
             initial: () => Container(),
-            loading: () =>Center(child: CircularProgressIndicator(),),
-            error: () =>FlutterLogo(),
-            loaded: (_) => _.isEmpty ? Center(child: Text('Nada foi encontrado :/'),):AnimeListHorizontal(data: _)
-        );
+            loading: () => Center(
+                  child: CircularProgressIndicator(),
+                ),
+            error: () => FlutterLogo(),
+            loaded: (_) => _.isEmpty
+                ? Center(
+                    child: Text('Nada foi encontrado :/'),
+                  )
+                : AnimeListHorizontal(data: _));
       },
     );
   }
@@ -59,6 +58,7 @@ class AnimeSearchDelegate extends SearchDelegate<String>{
       title: Text('Digite o nome do seu anime ex: Black Clover'),
     );
   }
+
   @override
   String get searchFieldLabel => 'Busca';
 }
@@ -87,4 +87,3 @@ class CustomLocalization extends DefaultMaterialLocalizations {
   @override
   String get searchFieldLabel => "My hint text";
 }
-

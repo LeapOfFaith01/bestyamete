@@ -25,10 +25,10 @@ class AppTheme {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
         statusBarIconBrightness:
-        themeMode == ThemeMode.light ? Brightness.dark : Brightness.light,
+            themeMode == ThemeMode.light ? Brightness.dark : Brightness.light,
         systemNavigationBarIconBrightness:
-        themeMode == ThemeMode.light ? Brightness.dark : Brightness.light,
+            themeMode == ThemeMode.light ? Brightness.dark : Brightness.light,
         systemNavigationBarColor:
-        themeMode == ThemeMode.light ? Colors.white : Colors.black));
+            themeMode == ThemeMode.light ? Colors.white : Colors.black));
   }
 }

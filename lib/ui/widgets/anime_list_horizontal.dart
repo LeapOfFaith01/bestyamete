@@ -8,7 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 
-import '../../main.dart';
 import '../../models/api_interfaces.dart';
 import '../../utils/persistence.dart';
 
@@ -33,33 +32,31 @@ class AnimeListHorizontal extends StatelessWidget {
         child: GestureDetector(
           onTap: () async {
             if (!isEpisode) {
-              if(await ConnectivityHelper.isOnline()){
+              if (await ConnectivityHelper.isOnline()) {
                 data[__].id == null
                     ? context
-                    .read<DetailBloc>()
-                    .add(DetailEvent.load(data[__].categoryId!))
+                        .read<DetailBloc>()
+                        .add(DetailEvent.load(data[__].categoryId!))
                     : context
-                    .read<DetailBloc>()
-                    .add(DetailEvent.load(data[__].id!));
+                        .read<DetailBloc>()
+                        .add(DetailEvent.load(data[__].id!));
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => DetailPage()),
                 );
-              }else{
+              } else {
                 data[__].id == null
                     ? context
-                    .read<DetailBloc>()
-                    .add(DetailEvent.loadOffline(data[__].categoryId!))
+                        .read<DetailBloc>()
+                        .add(DetailEvent.loadOffline(data[__].categoryId!))
                     : context
-                    .read<DetailBloc>()
-                    .add(DetailEvent.loadOffline(data[__].id!));
+                        .read<DetailBloc>()
+                        .add(DetailEvent.loadOffline(data[__].id!));
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => DetailPage()),
                 );
               }
-
-
             } else {
               if (data[__].videoId != null) {
                 context
@@ -96,7 +93,7 @@ class AnimeListHorizontal extends StatelessWidget {
                                 alignment: Alignment.topRight,
                                 child: ValueListenableBuilder(
                                   valueListenable:
-                                  GetIt.I<PersistenceHelper>().notifier,
+                                      GetIt.I<PersistenceHelper>().notifier,
                                   builder: (BuildContext context, value,
                                       Widget? child) {
                                     var favs =

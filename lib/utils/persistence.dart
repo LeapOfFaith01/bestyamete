@@ -6,19 +6,19 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../models/api_interfaces.dart';
 import '../models/download_item.dart';
 
-class PersistenceHelper{
+class PersistenceHelper {
   ValueNotifier<int> notifier = ValueNotifier(0);
 
-  notify(){
+  notify() {
     notifier.value++;
   }
 
   Map<String, DownloadItem> downloads = {};
-  Map<String, Detalhes> detalhes ={};
-  Map<String,Anime> favoritos = {};
+  Map<String, Detalhes> detalhes = {};
+  Map<String, Anime> favoritos = {};
 
   final Future<SharedPreferences> _prefsInstance =
-  SharedPreferences.getInstance();
+      SharedPreferences.getInstance();
 
   late final SharedPreferences _prefs;
 
@@ -30,26 +30,23 @@ class PersistenceHelper{
   //Recovery and parse data from storage
   void _recoveryFromStorage() {
     if (_prefs.getKeys().contains('downloads')) {
-      downloads =
-          json.decode(_prefs.getString('downloads')!).map((key, value) {
-            return MapEntry(key, DownloadItem.fromJson(value));
-          }).cast<String, DownloadItem>();
+      downloads = json.decode(_prefs.getString('downloads')!).map((key, value) {
+        return MapEntry(key, DownloadItem.fromJson(value));
+      }).cast<String, DownloadItem>();
     }
     if (_prefs.getKeys().contains('detalhes')) {
-      detalhes =
-          json.decode(_prefs.getString('detalhes')!).map((key, value) {
-            return MapEntry(key, Detalhes.fromJson(value));
-          }).cast<String, Detalhes>();
+      detalhes = json.decode(_prefs.getString('detalhes')!).map((key, value) {
+        return MapEntry(key, Detalhes.fromJson(value));
+      }).cast<String, Detalhes>();
     }
     if (_prefs.getKeys().contains('favoritos')) {
-      favoritos =
-          json.decode(_prefs.getString('favoritos')!).map((key, value) {
-            return MapEntry(key, Anime.fromJson(value));
-          }).cast<String, Anime>();
+      favoritos = json.decode(_prefs.getString('favoritos')!).map((key, value) {
+        return MapEntry(key, Anime.fromJson(value));
+      }).cast<String, Anime>();
     }
   }
 
-  void registerOfflineDetailPage(){
+  void registerOfflineDetailPage() {
     _prefs.setString('detalhes', json.encode(detalhes));
     print(detalhes);
     notify();
@@ -60,13 +57,14 @@ class PersistenceHelper{
     notify();
   }
 
-  void _updateStorage(){
-    _prefs.setString("favoritos",json.encode(favoritos));
+  void _updateStorage() {
+    _prefs.setString("favoritos", json.encode(favoritos));
     notify();
   }
 
-  void toggleFavorite(Anime data){
-    if(favoritos.containsKey(data.id)) favoritos.remove(data.id);
+  void toggleFavorite(Anime data) {
+    if (favoritos.containsKey(data.id))
+      favoritos.remove(data.id);
     else {
       favoritos[data.id!] = data;
     }

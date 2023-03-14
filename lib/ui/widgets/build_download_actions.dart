@@ -9,34 +9,32 @@ Widget buildActionForTask(DownloadItem item, detalhe) {
   if (item.status == DownloadTaskStatus.undefined.value) {
     return RawMaterialButton(
       onPressed: () {
-        GetIt.I<DownloadController>().addDownload(item, detalhe);
+        GetIt.I<FlutterDownloaderDownloadController>().addDownload(item, detalhe);
       },
       child: Icon(Icons.file_download),
       shape: CircleBorder(),
       constraints: BoxConstraints(minHeight: 32.0, minWidth: 32.0),
     );
-  }
-  else if (item.status == DownloadTaskStatus.enqueued.value) {
+  } else if (item.status == DownloadTaskStatus.enqueued.value) {
     return RawMaterialButton(
       onPressed: () {
         // GetIt.I<DownloadController>().addDownload(item);
       },
-      onLongPress: (){
-        GetIt.I<DownloadController>().delete(item);
+      onLongPress: () {
+        GetIt.I<FlutterDownloaderDownloadController>().delete(item);
       },
       child: Icon(Icons.ac_unit),
       shape: CircleBorder(),
       constraints: BoxConstraints(minHeight: 32.0, minWidth: 32.0),
     );
-  }
-  else if (item.status == DownloadTaskStatus.running.value) {
+  } else if (item.status == DownloadTaskStatus.running.value) {
     return RawMaterialButton(
       onPressed: () {
-        GetIt.I<DownloadController>().pauseDownload(item);
+        GetIt.I<FlutterDownloaderDownloadController>().pauseDownload(item);
       },
-      onLongPress: ()async {
-        // GetIt.I<DownloadController>().delete(item);
-        await FlutterDownloader.cancelAll();
+      onLongPress: () async {
+        GetIt.I<FlutterDownloaderDownloadController>().delete(item);
+        // await FlutterDownloader.cancelAll();
       },
       shape: CircleBorder(),
       constraints: BoxConstraints(minHeight: 32.0, minWidth: 32.0),
@@ -44,14 +42,13 @@ Widget buildActionForTask(DownloadItem item, detalhe) {
         progress: item.progress + 0.0,
       ),
     );
-  }
-  else if (item.status == DownloadTaskStatus.paused.value) {
+  } else if (item.status == DownloadTaskStatus.paused.value) {
     return RawMaterialButton(
       onPressed: () {
-        GetIt.I<DownloadController>().resumeDownload(item);
+        GetIt.I<FlutterDownloaderDownloadController>().resumeDownload(item);
       },
-      onLongPress: (){
-        GetIt.I<DownloadController>().delete(item);
+      onLongPress: () {
+        GetIt.I<FlutterDownloaderDownloadController>().delete(item);
       },
       child: Icon(
         Icons.play_arrow,
@@ -60,14 +57,13 @@ Widget buildActionForTask(DownloadItem item, detalhe) {
       shape: CircleBorder(),
       constraints: BoxConstraints(minHeight: 32.0, minWidth: 32.0),
     );
-  }
-  else if (item.status == DownloadTaskStatus.canceled.value) {
+  } else if (item.status == DownloadTaskStatus.canceled.value) {
     return RawMaterialButton(
-      onPressed: () async  {
-        GetIt.I<DownloadController>().retryDownload(item);
+      onPressed: () async {
+        GetIt.I<FlutterDownloaderDownloadController>().retryDownload(item);
       },
-      onLongPress: (){
-        GetIt.I<DownloadController>().delete(item);
+      onLongPress: () {
+        GetIt.I<FlutterDownloaderDownloadController>().delete(item);
       },
       child: Icon(
         Icons.info,
@@ -76,8 +72,7 @@ Widget buildActionForTask(DownloadItem item, detalhe) {
       shape: CircleBorder(),
       constraints: BoxConstraints(minHeight: 32.0, minWidth: 32.0),
     );
-  }
-  else if (item.status == DownloadTaskStatus.complete.value) {
+  } else if (item.status == DownloadTaskStatus.complete.value) {
     return Row(
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.end,
@@ -88,10 +83,10 @@ Widget buildActionForTask(DownloadItem item, detalhe) {
         ),
         RawMaterialButton(
           onPressed: () {
-            GetIt.I<DownloadController>().delete(item);
+            GetIt.I<FlutterDownloaderDownloadController>().delete(item);
           },
-          onLongPress: (){
-            GetIt.I<DownloadController>().delete(item);
+          onLongPress: () {
+            GetIt.I<FlutterDownloaderDownloadController>().delete(item);
           },
           child: Icon(
             Icons.delete_forever,
@@ -102,8 +97,7 @@ Widget buildActionForTask(DownloadItem item, detalhe) {
         )
       ],
     );
-  }
-  else if (item.status == DownloadTaskStatus.failed.value) {
+  } else if (item.status == DownloadTaskStatus.failed.value) {
     return Row(
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.end,
@@ -111,10 +105,10 @@ Widget buildActionForTask(DownloadItem item, detalhe) {
         Text('Failed', style: TextStyle(color: Colors.red)),
         RawMaterialButton(
           onPressed: () {
-            GetIt.I<DownloadController>().retryDownload(item);
+            GetIt.I<FlutterDownloaderDownloadController>().retryDownload(item);
           },
-          onLongPress: (){
-            GetIt.I<DownloadController>().delete(item);
+          onLongPress: () {
+            GetIt.I<FlutterDownloaderDownloadController>().delete(item);
           },
           child: Icon(
             Icons.refresh,
@@ -125,8 +119,7 @@ Widget buildActionForTask(DownloadItem item, detalhe) {
         )
       ],
     );
-  }
-  else {
+  } else {
     return SizedBox(
       height: 50,
       width: 50,

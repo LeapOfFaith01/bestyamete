@@ -6,9 +6,9 @@ import 'package:get_it/get_it.dart';
 
 import '../../external/api.dart';
 
+part 'detail_bloc.freezed.dart';
 part 'detail_event.dart';
 part 'detail_state.dart';
-part 'detail_bloc.freezed.dart';
 
 class DetailBloc extends Bloc<DetailEvent, DetailState> {
   DetailBloc() : super(const DetailState.initial()) {
@@ -16,9 +16,9 @@ class DetailBloc extends Bloc<DetailEvent, DetailState> {
       emit(const DetailState.loading());
       var detalhes = await Api().obterDetalhes(event.id);
       var episodios = await Api().obterListaDeEpisodios(event.id);
-      emit(DetailState.loaded(detalhes.first,episodios.reversed.toList()));
+      emit(DetailState.loaded(detalhes.first, episodios.reversed.toList()));
     });
-    on<_LoadOffline>((event,emit) async{
+    on<_LoadOffline>((event, emit) async {
       emit(const DetailState.loading());
 
       //Retrieve from persistence storage;
@@ -27,17 +27,18 @@ class DetailBloc extends Bloc<DetailEvent, DetailState> {
 
       List<Anime> reduced = [];
 
-      if(data.containsKey(event.id)){
-       var detail = data[event.id];
-       for (var element in episodes.values) {
-         if(element.categoryId == detail?.id && element.status == 3){
-           reduced.add(Anime(categoryId: element.categoryId,title: element.name,videoId: element.videoId));
-         }
-       }
-       emit(DetailState.loaded(detail!, reduced));
-      }else{
-
-      }
+      if (data.containsKey(event.id)) {
+        var detail = data[event.id];
+        for (var element in episodes.values) {
+          if (element.categoryId == detail?.id && element.status == 3) {
+            reduced.add(Anime(
+                categoryId: element.categoryId,
+                title: element.name,
+                videoId: element.videoId));
+          }
+        }
+        emit(DetailState.loaded(detail!, reduced));
+      } else {}
     });
   }
 }

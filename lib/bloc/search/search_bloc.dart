@@ -4,9 +4,9 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 
 import '../../models/api_interfaces.dart';
 
+part 'search_bloc.freezed.dart';
 part 'search_event.dart';
 part 'search_state.dart';
-part 'search_bloc.freezed.dart';
 
 class SearchBloc extends Bloc<SearchEvent, SearchState> {
   SearchBloc() : super(const SearchState.initial()) {
@@ -14,7 +14,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
       List<Anime> response = [];
 
       emit(const SearchState.loading());
-      switch(event.type){
+      switch (event.type) {
         case SearchType.category:
           response = await Api().obterAnimesPorCategoria(event.data);
           emit(SearchState.loaded(response));

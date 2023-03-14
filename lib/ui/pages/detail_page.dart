@@ -1,4 +1,3 @@
-import 'dart:developer' as developer;
 import 'package:bestyamete/bloc/index.dart';
 import 'package:bestyamete/ui/pages/stream_page.dart';
 import 'package:bestyamete/ui/widgets/build_download_actions.dart';
@@ -9,6 +8,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 
 import '../../controllers/download_controller.dart';
+import '../../controllers/easy_controller.dart';
+import '../../controllers/flutter_downloader_manager_controller.dart';
 import '../../utils/persistence.dart';
 
 class DetailPage extends StatelessWidget {
@@ -18,6 +19,7 @@ class DetailPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    ScrollController controller = ScrollController();
     final state = context.watch<DetailBloc>().state;
     return state.when(
         initial: () => Container(),
@@ -29,6 +31,9 @@ class DetailPage extends StatelessWidget {
         error: () => Container(),
         loaded: (detalhes, episodios) {
           return Scaffold(
+            // floatingActionButton: controller.position.is > 400.0 ? FloatingActionButton(child: Icon(Icons.arrow_upward),onPressed: (){
+            //   controller.jumpTo(controller.position.minScrollExtent);
+            // }):null,
             appBar: AppBar(
               title: Text(detalhes.categoryName!),
               backgroundColor: Colors.transparent,
@@ -36,6 +41,7 @@ class DetailPage extends StatelessWidget {
             ),
             body: ListView(
               padding: EdgeInsets.all(15),
+              controller: controller,
               children: [
                 ClipRRect(
                   borderRadius: BorderRadius.circular(15),
@@ -43,7 +49,8 @@ class DetailPage extends StatelessWidget {
                     height: MediaQuery.of(context).size.height * .40,
                     child: CachedNetworkImage(
                       httpHeaders: DataHelpers.baseHeaders,
-                      imageUrl: DataHelpers.baseImageUrl + detalhes.categoryImage!,
+                      imageUrl:
+                          DataHelpers.baseImageUrl + detalhes.categoryImage!,
                       placeholder: (_, __) => CircularProgressIndicator(),
                       fit: BoxFit.fill,
                     ),
@@ -89,74 +96,79 @@ class DetailPage extends StatelessWidget {
                         letterSpacing: 2,
                       )),
                 ),
-                // ..episodios.map((e) => ClipRRect(
-                //   borderRadius: BorderRadius.circular(10),
-                //   child: ListTile(
-                //       onTap: () {
-                //         context
-                //             .read<StreamingBloc>()
-                //             .add(StreamingEvent.load(e.videoId!));
-                //         Navigator.push(
-                //           context,
-                //           MaterialPageRoute(
-                //               builder: (context) => StreamPage()),
-                //         );
-                //       },
-                //       title: Text(e.title!),
-                //       trailing: ValueListenableBuilder(
-                //           valueListenable:
-                //           GetIt.I<PersistenceHelper>().notifier,
-                //           builder: (context, notifier, child) {
-                //             var downloads =
-                //                 GetIt.I<PersistenceHelper>().downloads;
-                //             return downloads.containsKey(e.videoId)
-                //                 ? buildActionForTask(
-                //                 downloads[e.videoId]!,detalhes)
-                //                 : IconButton(
-                //                 onPressed: () {
-                //                   GetIt.I<DownloadController>()
-                //                       .addDownload(e.videoId!,detalhes);
-                //                 },
-                //                 icon: Icon(Icons.download));
-                //           })),
-                // ),).toList()
-                Container(
-                  height: MediaQuery.of(context).size.height * .50,
-                  child: ListView.builder(
-                    itemCount: episodios.length,
-                    itemBuilder: (_, index) => ClipRRect(
-                      borderRadius: BorderRadius.circular(10),
-                      child: ListTile(
-                          onTap: () {
-                            context
-                                .read<StreamingBloc>()
-                                .add(StreamingEvent.load(episodios[index].videoId!));
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => StreamPage()),
-                            );
-                          },
-                          title: Text(episodios[index].title!),
-                          trailing: ValueListenableBuilder(
-                              valueListenable:
-                              GetIt.I<PersistenceHelper>().notifier,
-                              builder: (context, notifier, child) {
-                                var downloads =
-                                    GetIt.I<PersistenceHelper>().downloads;
-                                return downloads.containsKey(episodios[index].videoId)
-                                    ? buildActionForTask(
-                                        downloads[episodios[index].videoId]!,detalhes)
-                                    : IconButton(
-                                          onPressed: () {
-                                            GetIt.I<DownloadController>()
-                                                .addDownload(episodios[index].videoId!,detalhes);
-                                          },
-                                          icon: Icon(Icons.download));
-                              })),
-                    ),
-                  ),
-                )
+                ...episodios.map((e) => ClipRRect(
+                  borderRadius: BorderRadius.circular(10),
+                  child: ListTile(
+                      onTap: () {
+                        context
+                            .read<StreamingBloc>()
+                            .add(StreamingEvent.load(e.videoId!));
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => StreamPage()),
+                        );
+                      },
+                      title: Text(e.title!),
+                      trailing: ValueListenableBuilder(
+                          valueListenable:
+                          GetIt.I<PersistenceHelper>().notifier,
+                          builder: (context, notifier, child) {
+                            var downloads =
+                                GetIt.I<PersistenceHelper>().downloads;
+                            return downloads.containsKey(e.videoId)
+                                ? buildActionForTask(
+                                downloads[e.videoId]!,detalhes)
+                                : IconButton(
+                                onPressed: () {
+                                  GetIt.I<FlutterDownloaderDownloadController>()
+                                      .addDownload(e.videoId!,detalhes);
+                                  // GetIt.I<EasyDownloaderController>().createDownloadTask(e.videoId, detalhes);
+                                  // GetIt.I<FlutterDownloaderManagerController>().createDownloadTask(e.videoId, detalhes);
+                                },
+                                icon: Icon(Icons.download));
+                          })),
+                ),)
+                // Container(
+                //   height: MediaQuery.of(context).size.height * .50,
+                //   child: ListView.builder(
+                //     itemCount: episodios.length,
+                //     itemBuilder: (_, index) => ClipRRect(
+                //       borderRadius: BorderRadius.circular(10),
+                //       child: ListTile(
+                //           onTap: () {
+                //             context.read<StreamingBloc>().add(
+                //                 StreamingEvent.load(episodios[index].videoId!));
+                //             Navigator.push(
+                //               context,
+                //               MaterialPageRoute(
+                //                   builder: (context) => StreamPage()),
+                //             );
+                //           },
+                //           title: Text(episodios[index].title!),
+                //           trailing: ValueListenableBuilder(
+                //               valueListenable:
+                //                   GetIt.I<PersistenceHelper>().notifier,
+                //               builder: (context, notifier, child) {
+                //                 var downloads =
+                //                     GetIt.I<PersistenceHelper>().downloads;
+                //                 return downloads
+                //                         .containsKey(episodios[index].videoId)
+                //                     ? buildActionForTask(
+                //                         downloads[episodios[index].videoId]!,
+                //                         detalhes)
+                //                     : IconButton(
+                //                         onPressed: () {
+                //                           GetIt.I<DownloadController>()
+                //                               .addDownload(
+                //                                   episodios[index].videoId!,
+                //                                   detalhes);
+                //                         },
+                //                         icon: Icon(Icons.download));
+                //               })),
+                //     ),
+                //   ),
+                // )
               ],
             ),
           );

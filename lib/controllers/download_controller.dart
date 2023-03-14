@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:bestyamete/external/api.dart';
 import 'package:bestyamete/models/api_interfaces.dart';
 import 'package:bestyamete/utils/download.dart';
@@ -8,11 +6,10 @@ import 'package:bestyamete/utils/persistence.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:get_it/get_it.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/download_item.dart';
 
-class DownloadController {
+class FlutterDownloaderDownloadController {
   //Make this class reactive
   ValueNotifier<int> notifier = ValueNotifier(0);
 
@@ -67,10 +64,10 @@ class DownloadController {
     persistenceHelper.notify();
   }
 
-
   void updateProgress(id, status, progress) {
     // final item = _queue.firstWhere((it) => it.itemID == id);
-    final item = persistenceHelper.downloads.values.firstWhere((element) => element.itemID == id);
+    final item = persistenceHelper.downloads.values
+        .firstWhere((element) => element.itemID == id);
     item.status = status.value;
     item.progress = progress;
 
@@ -112,8 +109,8 @@ class DownloadController {
 
   Future<void> resumeDownload(DownloadItem item) async {
     String? newTaskId = await FlutterDownloader.resume(taskId: item.itemID!);
-    final updatedItem =
-    persistenceHelper.downloads.values.firstWhere((element) => element.itemID == item.itemID);
+    final updatedItem = persistenceHelper.downloads.values
+        .firstWhere((element) => element.itemID == item.itemID);
     updatedItem.itemID = newTaskId;
     persistenceHelper.downloads[item.videoId] = updatedItem;
     persistenceHelper.notify();
@@ -124,7 +121,9 @@ class DownloadController {
         taskId: item.itemID!, shouldDeleteContent: true);
     persistenceHelper.downloads.remove(item.videoId);
 
-    if(persistenceHelper.downloads.values.where((element) => element.categoryId == item.categoryId).isEmpty){
+    if (persistenceHelper.downloads.values
+        .where((element) => element.categoryId == item.categoryId)
+        .isEmpty) {
       persistenceHelper.detalhes.remove(item.categoryId);
     }
 

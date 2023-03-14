@@ -1,21 +1,24 @@
 import 'dart:convert';
 import 'dart:developer' as developer;
-import 'dart:io';
+
 import 'package:bestyamete/models/api_interfaces.dart';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
+
 import '../utils/helpers.dart';
-import 'package:dio/dio.dart';
-class Api{
+
+class Api {
   _normalize(Uint8List data) => utf8.decode(data, allowMalformed: true);
-  Future<List<Anime>> obterEpisodiosRecentes() async{
+  Future<List<Anime>> obterEpisodiosRecentes() async {
     var url = Uri(
-      scheme: 'https',
-      host: 'appanimeplus.tk',
-      path: 'play-api.php',
-      query: 'latest'
+        scheme: 'https',
+        host: 'appanimeplus.tk',
+        path: 'play-api.php',
+        query: 'latest');
+    var response = await http.get(
+      url,
+      headers: DataHelpers.baseHeaders,
     );
-    var response = await http.get(url,headers: DataHelpers.baseHeaders,);
     //Formata o corpo semi gzip para utf8
     var normalized = _normalize(response.bodyBytes);
 
@@ -24,36 +27,17 @@ class Api{
     return List<Anime>.from(parsed.map((e) => Anime.fromJson(e)));
   }
 
-  Future<List<Anime>> obterAnimesPorCategoria(String category) async{
-    var url = Uri(
-      scheme: DataHelpers.baseScheme,
-      host:DataHelpers.baseHost,
-      path: DataHelpers.basePath,
-      queryParameters: {
-        DataHelpers.categoryQuery:category
-      }
-    );
-
-    var response = await http.get(url,headers: DataHelpers.baseHeaders,);
-    //Formata o corpo semi gzip para utf8
-    var normalized = _normalize(response.bodyBytes);
-
-    Iterable parsed = await json.decode(normalized);
-
-    return List<Anime>.from(parsed.map((e) => Anime.fromJson(e)));
-  }
-
-  Future<List<Anime>> obterAnimesPorLetra(String letter) async{
+  Future<List<Anime>> obterAnimesPorCategoria(String category) async {
     var url = Uri(
         scheme: DataHelpers.baseScheme,
-        host:DataHelpers.baseHost,
+        host: DataHelpers.baseHost,
         path: DataHelpers.basePath,
-        queryParameters: {
-          DataHelpers.letterQuery : letter
-        }
-    );
+        queryParameters: {DataHelpers.categoryQuery: category});
 
-    var response = await http.get(url,headers: DataHelpers.baseHeaders,);
+    var response = await http.get(
+      url,
+      headers: DataHelpers.baseHeaders,
+    );
     //Formata o corpo semi gzip para utf8
     var normalized = _normalize(response.bodyBytes);
 
@@ -62,17 +46,17 @@ class Api{
     return List<Anime>.from(parsed.map((e) => Anime.fromJson(e)));
   }
 
-  Future<List<Anime>> obterListaDeEpisodios(String id) async{
+  Future<List<Anime>> obterAnimesPorLetra(String letter) async {
     var url = Uri(
         scheme: DataHelpers.baseScheme,
-        host:DataHelpers.baseHost,
+        host: DataHelpers.baseHost,
         path: DataHelpers.basePath,
-        queryParameters: {
-          DataHelpers.episodeQuery : id
-        }
-    );
+        queryParameters: {DataHelpers.letterQuery: letter});
 
-    var response = await http.get(url,headers: DataHelpers.baseHeaders,);
+    var response = await http.get(
+      url,
+      headers: DataHelpers.baseHeaders,
+    );
     //Formata o corpo semi gzip para utf8
     var normalized = _normalize(response.bodyBytes);
 
@@ -81,17 +65,36 @@ class Api{
     return List<Anime>.from(parsed.map((e) => Anime.fromJson(e)));
   }
 
-  Future<List<Stream>> obterDadosDeStreaming(String id) async{
+  Future<List<Anime>> obterListaDeEpisodios(String id) async {
     var url = Uri(
         scheme: DataHelpers.baseScheme,
-        host:DataHelpers.baseHost,
+        host: DataHelpers.baseHost,
         path: DataHelpers.basePath,
-        queryParameters: {
-          DataHelpers.streamQuery : id
-        }
-    );
+        queryParameters: {DataHelpers.episodeQuery: id});
 
-    var response = await http.get(url,headers: DataHelpers.baseHeaders,);
+    var response = await http.get(
+      url,
+      headers: DataHelpers.baseHeaders,
+    );
+    //Formata o corpo semi gzip para utf8
+    var normalized = _normalize(response.bodyBytes);
+
+    Iterable parsed = await json.decode(normalized);
+
+    return List<Anime>.from(parsed.map((e) => Anime.fromJson(e)));
+  }
+
+  Future<List<Stream>> obterDadosDeStreaming(String id) async {
+    var url = Uri(
+        scheme: DataHelpers.baseScheme,
+        host: DataHelpers.baseHost,
+        path: DataHelpers.basePath,
+        queryParameters: {DataHelpers.streamQuery: id});
+
+    var response = await http.get(
+      url,
+      headers: DataHelpers.baseHeaders,
+    );
     //Formata o corpo semi gzip para utf8
     var normalized = _normalize(response.bodyBytes);
 
@@ -100,21 +103,21 @@ class Api{
     return List<Stream>.from(parsed.map((e) => Stream.fromJson(e)));
   }
 
-  Future<List<Anime>> obterAnimesPorNome(String name) async{
+  Future<List<Anime>> obterAnimesPorNome(String name) async {
     var url = Uri(
         scheme: DataHelpers.baseScheme,
-        host:DataHelpers.baseHost,
+        host: DataHelpers.baseHost,
         path: DataHelpers.basePath,
-        queryParameters: {
-          DataHelpers.searchQuery : name
-        }
-    );
+        queryParameters: {DataHelpers.searchQuery: name});
 
-    var response = await http.get(url,headers: DataHelpers.baseHeaders,);
+    var response = await http.get(
+      url,
+      headers: DataHelpers.baseHeaders,
+    );
     //Formata o corpo semi gzip para utf8
     var normalized = _normalize(response.bodyBytes);
 
-    if(normalized.toString().trim() == 'null'){
+    if (normalized.toString().trim() == 'null') {
       return [];
     }
     Iterable parsed = await json.decode(normalized);
@@ -122,17 +125,17 @@ class Api{
     return List<Anime>.from(parsed.map((e) => Anime.fromJson(e)));
   }
 
-  Future<List<Detalhes>> obterDetalhes(String id) async{
+  Future<List<Detalhes>> obterDetalhes(String id) async {
     var url = Uri(
         scheme: DataHelpers.baseScheme,
-        host:DataHelpers.baseHost,
+        host: DataHelpers.baseHost,
         path: DataHelpers.basePath,
-        queryParameters: {
-          DataHelpers.detailQuery : id
-        }
-    );
+        queryParameters: {DataHelpers.detailQuery: id});
 
-    var response = await http.get(url,headers: DataHelpers.baseHeaders,);
+    var response = await http.get(
+      url,
+      headers: DataHelpers.baseHeaders,
+    );
     //Formata o corpo semi gzip para utf8
     var normalized = _normalize(response.bodyBytes);
 
@@ -141,14 +144,16 @@ class Api{
     return List<Detalhes>.from(parsed.map((e) => Detalhes.fromJson(e)));
   }
 
-  Future<List<Anime>> obterAnimesPopulares() async{
+  Future<List<Anime>> obterAnimesPopulares() async {
     var url = Uri(
         scheme: DataHelpers.baseScheme,
-        host:DataHelpers.baseHost,
+        host: DataHelpers.baseHost,
         path: DataHelpers.basePath,
-        query: DataHelpers.popularQuery
+        query: DataHelpers.popularQuery);
+    var response = await http.get(
+      url,
+      headers: DataHelpers.baseHeaders,
     );
-    var response = await http.get(url,headers: DataHelpers.baseHeaders,);
     //Formata o corpo semi gzip para utf8
     var normalized = _normalize(response.bodyBytes);
 
@@ -157,25 +162,27 @@ class Api{
     return List<Anime>.from(parsed.map((e) => Anime.fromJson(e)));
   }
 
-  Future<List<Stream>> obterDadosStreamingProximoEpisodio(String id, String animeId) async{
+  Future<List<Stream>> obterDadosStreamingProximoEpisodio(
+      String id, String animeId) async {
     var url = Uri(
         scheme: DataHelpers.baseScheme,
-        host:DataHelpers.baseHost,
+        host: DataHelpers.baseHost,
         path: DataHelpers.basePath,
         queryParameters: {
-          DataHelpers.streamQuery : id,
+          DataHelpers.streamQuery: id,
           DataHelpers.nextEpisodeQuery: animeId,
-          DataHelpers.nextEpisodePrefixQuery:''
-        }
+          DataHelpers.nextEpisodePrefixQuery: ''
+        });
+
+    var response = await http.get(
+      url,
+      headers: DataHelpers.baseHeaders,
     );
-
-    var response = await http.get(url,headers: DataHelpers.baseHeaders,);
-
 
     //Formata o corpo semi gzip para utf8
     var normalized = _normalize(response.bodyBytes);
     developer.log(normalized);
-    if(normalized=='null') return [];
+    if (normalized == 'null') return [];
 
     Iterable parsed = await json.decode(normalized);
 
